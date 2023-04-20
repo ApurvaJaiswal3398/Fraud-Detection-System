@@ -4,3 +4,4 @@ plotly
 seaborn
 sklearn
 imblearn
+tensorflow 
