@@ -44,13 +44,19 @@
 -->
 
 <!-- login Page Layout 3 -->
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
-<head>
-    <title>Login Page</title>
+<head> -->
+    {% extends 'layout.html' %}
+    <!-- <title>Login Page</title> -->
+    {% block css %}
     <link rel="stylesheet" href="static\css\style.css">
-</head>
-<body>
+    {% endblock %}
+<!-- </head>
+<body> -->
+    {% block spin_login %}<span class="spinner-grow spinner-grow-sm"></span>{% endblock %}
+
+    {% block body %}
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="#">
@@ -97,15 +103,16 @@
             </div>
         </div>
     </div>
-    
-    <footer>
-        <!-- <p>
+    {% endblock %}
+    <!-- <footer>
+        <p>
             Created with <i class="fa fa-heart"></i> by
             <a target="_blank" href="https://florin-pop.com">Florin Pop</a>
             - Read how I created this and how you can join the challenge
             <a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">here</a>.
-        </p> -->
-    </footer>
+        </p>
+    </footer> -->
+    {% block js %}
     <script>
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
@@ -119,5 +126,6 @@
             container.classList.remove("right-panel-active");
         });
     </script>
-</body>
-</html>
+    {% endblock %}
+<!-- </body>
+</html> -->
