@@ -41,6 +41,7 @@ def index():
     # name = "Sample Project One"     # Random Name for a Button
     print(f"Logged In : {logged_in}\nOTP : {otp}\nAdmin Pass : {adminpass}\nReceiver : {receiver}\nLogin Msg : {loginmsg}\nPassword Changed : {pschanged}")
     return render_template('base.html', title='Home Page', logged_in=logged_in, message = loginmsg, alert=alert)
+    # return redirect('/login')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -110,8 +111,8 @@ def dashboard():
         trans_oldbalanceOrig=request.form.get('trans_oldbalanceOrg')
         trans_newbalanceOrig=request.form.get('trans_newbalanceOrig')
         trans_nameDest=request.form.get('trans_nameDest')
-        trans_oldbalanceDest=request.form.get('trans_oldbalanceOrg')
-        trans_newbalanceDest=request.form.get('trans_newbalanceOrig')
+        trans_oldbalanceDest=request.form.get('trans_oldbalanceDest')
+        trans_newbalanceDest=request.form.get('trans_newbalanceDest')
 
         db = getdb()
         db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest))
@@ -123,6 +124,11 @@ def dashboard():
         return redirect('/dashboard')
     print(f"Logged In : {logged_in}")
     return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert)#, graphJSON=graphJSON, ids=ids)
+
+# @app.route('/')
+@app.route('/homepage')
+def homepage():
+    return render_template('homepage.html')
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=8000, debug=True)

@@ -47,6 +47,17 @@
         overflow-y: scroll;
         height: 500px;
     }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content:center;
+      height: 100vh;
+    }
+    button:hover {
+        background-color:#4CAF50;
+        color: white;
+    }
 </style>
 <!-- Custom styles for this template -->
 <!-- <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet"> -->
@@ -79,7 +90,7 @@
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link btn-outline-dark bg-light" id="home" onclick="usersTable()">
                             <span data-feather="home"></span>Users<span class="sr-only">(current)</span>
                         </a>
@@ -103,10 +114,20 @@
                         <a class="nav-link btn-outline-dark bg-light" id="bill" onclick="billingTable()">
                             <span data-feather="bar-chart-2"></span>Billing
                         </a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                            <span data-feather="bar-chart-2"></span>Training Dataset
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="billingChart()">
-                            <span data-feather="bar-chart-2"></span>Reports & Graphs
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                            <span data-feather="bar-chart-2"></span>Training Report
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-outline-dark bg-light" id="chart">
+                            <span data-feather="bar-chart-2"></span>Fraud Prediction
                         </a>
                     </li>
                     <li class="nav-item">
@@ -159,7 +180,7 @@
         
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
+                <h1 class="h2" style="margin-top: -50px">Dashboard</h1>
                 <!-- <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -320,41 +341,41 @@
                 </table>
             </div> -->
             <div id="transaction_div"  style="display: none;">
-                <form method="POST" enctype="multipart/form-data">
-                    <h4>Transaction Details Entry</h4>
-                    <br><br>
-                    <label for="trans_type">Select Transaction Type : </label>
-                    <select name="trans_type" id="trans_type">
-                        <option value="PAYMENT">PAYMENT</option>
-                        <option value="CASH_OUT">CASH_OUT</option>
-                        <option value="DEBIT">DEBIT</option>
-                        <option value="TRANSFER">TRANSFER</option>
-                        <option value="CASH_IN">CASH_IN</option>
-                    </select>
-                    <br><br>
-                    <label for="tans_amt">Enter Transaction Amount : </label>
-                    <input type="number" name="trans_amt" placeholder="Enter Transaction Amount">
-                    <br><br>
-                    <label for="tans_nameOrig">Enter Original Account Number : </label>
-                    <input type="text" name="trans_nameOrig" placeholder="Enter Original Account Number">
-                    <br><br>
-                    <label for="tans_oldbalanceOrg">Enter Old Balance of Original Account : </label>
-                    <input type="number" name="trans_oldbalanceOrg" placeholder="Enter Old Balance">
-                    <br><br>
-                    <label for="tans_newbalanceOrig">Enter New Balance of Original Account : </label>
-                    <input type="number" name="trans_newbalanceOrig" placeholder="Enter New Balance">
-                    <br><br>
-                    <label for="tans_nameDest">Enter Destination Account Number : </label>
-                    <input type="text" name="trans_nameDest" placeholder="Enter Destination Account Number">
-                    <br><br>
-                    <label for="tans_oldbalanceDest">Enter Old Balance of Destination Account : </label>
-                    <input type="number" name="trans_oldbalanceDest" placeholder="Enter Old Balance">
-                    <br><br>
-                    <label for="tans_newbalanceDest">Enter New Balance of Destination Account : </label>
-                    <input type="number" name="trans_newbalanceDest" placeholder="Enter New Balance">
-                    <br><br>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                <div class="container">
+                    <form method="POST" enctype="multipart/form-data">
+                        <h3>Transaction Details Entry</h3><br>
+                        <label for="trans_type">Select Transaction Type : </label>
+                        <select name="trans_type" id="trans_type">
+                            <option value="PAYMENT">PAYMENT</option>
+                            <option value="CASH_OUT">CASH_OUT</option>
+                            <option value="DEBIT">DEBIT</option>
+                            <option value="TRANSFER">TRANSFER</option>
+                            <option value="CASH_IN">CASH_IN</option>
+                        </select>
+                        <br><br>
+                        <label for="tans_amt">Enter Transaction Amount : </label>
+                        <input type="number" name="trans_amt" placeholder="Enter Transaction Amount" required>
+                        <br><br>
+                        <label for="tans_nameOrig">Enter Original Account Number : </label>
+                        <input type="text" name="trans_nameOrig" placeholder="Enter Original Account Number" required>
+                        <br><br>
+                        <label for="tans_oldbalanceOrg">Enter Old Balance of Original Account : </label>
+                        <input type="number" name="trans_oldbalanceOrg" placeholder="Enter Old Balance" required>
+                        <br><br>
+                        <label for="tans_newbalanceOrig">Enter New Balance of Original Account : </label>
+                        <input type="number" name="trans_newbalanceOrig" placeholder="Enter New Balance" required>
+                        <br><br>
+                        <label for="tans_nameDest">Enter Destination Account Number : </label>
+                        <input type="text" name="trans_nameDest" placeholder="Enter Destination Account Number" required>
+                        <br><br>
+                        <label for="tans_oldbalanceDest">Enter Old Balance of Destination Account : </label>
+                        <input type="number" name="trans_oldbalanceDest" placeholder="Enter Old Balance" required>
+                        <br><br>
+                        <label for="tans_newbalanceDest">Enter New Balance of Destination Account : </label>
+                        <input type="number" name="trans_newbalanceDest" placeholder="Enter New Balance" required><br><br>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
             </div>
             <!-- <div id="UserTable">
                 <h3>Registered Users</h3>
