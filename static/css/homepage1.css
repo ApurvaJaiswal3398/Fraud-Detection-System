@@ -37,6 +37,15 @@ html, body {
     margin-right:10px;
 }
 
+.menu-item {
+    text-decoration: none;
+    color: bisque;
+}
+
+.menu-item:hover {
+    color: #fff;
+}
+
 .main {
     position: relative;
     top: 180px;
@@ -67,7 +76,18 @@ html, body {
 
 .btn-main:hover{
     color: #fff;
-    background-color: rgba(51,51,51,0.8);
+}
+
+#login_link:hover{
+    background-color: rgba(42, 165, 58, 0.8);
+}
+
+#dashboard_link:hover{
+    background-color: rgba(42, 50, 165, 0.8);
+}
+
+#logout_link:hover{
+    background-color: rgba(165, 42, 42, 0.8);
 }
 
 .btn-default {
@@ -99,7 +119,8 @@ html, body {
 }
 
 .supporting img {
-    height: 32px;
+    height: 64px;
+    margin-bottom: 10px;
 }
 
 .supporting h2 {
@@ -140,5 +161,12 @@ html, body {
     
     .supporting .col {
         width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    #predict_tile {
+        border-left: none !important;
+        
     }
 }

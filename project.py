@@ -40,8 +40,8 @@ def getdb():
 def index():
     # name = "Sample Project One"     # Random Name for a Button
     print(f"Logged In : {logged_in}\nOTP : {otp}\nAdmin Pass : {adminpass}\nReceiver : {receiver}\nLogin Msg : {loginmsg}\nPassword Changed : {pschanged}")
-    return render_template('base.html', title='Home Page', logged_in=logged_in, message = loginmsg, alert=alert)
-    # return redirect('/login')
+    # return render_template('base.html', title='Home Page', logged_in=logged_in, message = loginmsg, alert=alert)
+    return redirect('/homepage')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -77,7 +77,7 @@ def login():
         if pschanged:
             noneall()
     print(f"Logged In : {logged_in}\nOTP : {otp}\nAdmin Pass : {adminpass}\nReceiver : {receiver}\nLogin Msg : {loginmsg}\nPassword Changed : {pschanged}")
-    return render_template('login.html', title='Login', logged_in=logged_in, user=logged_in_detail, message=message, alert=alert)
+    return render_template('login1.html', title='Login', logged_in=logged_in, user=logged_in_detail, message=message, alert=alert)
 
 @app.route('/logout')
 def logout():
@@ -123,12 +123,12 @@ def dashboard():
         loginmsg = 'Data Saved Successfully!'
         return redirect('/dashboard')
     print(f"Logged In : {logged_in}")
-    return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert)#, graphJSON=graphJSON, ids=ids)
+    return render_template('dashboard1.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert)#, graphJSON=graphJSON, ids=ids)
 
 # @app.route('/')
 @app.route('/homepage')
 def homepage():
-    return render_template('homepage.html')
+    return render_template('homepage1.html', logged_in=logged_in, message = loginmsg, alert=alert)
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=8000, debug=True)
