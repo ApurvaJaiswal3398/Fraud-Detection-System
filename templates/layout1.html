@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Fraud Detection - {% block title %}{{ title }}{% endblock %}</title>
+    <title>Fraud Detection - {{ title }}</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,13 +11,14 @@
     {% block css %}{% endblock %}
 </head>
 <body>
-    <div class="header">
-        <div class="container zindex-tooltip">
+    <div class="header" style="z-index: 100;">
+        <div class="container" style="height: auto; align-items: normal;">
             <ul class="nav">
+                <li class="nav-item ">Fraud Detection</li>
                 <li class="nav-item">
                     <a class="menu-item" href="/" aria-label="home">{% block spin_home %}{% endblock %}Home</a>
                 </li>
-                {% if logged_in %}
+                <!-- {% if logged_in %}
                 <li class="nav-item">
                     <a class="menu-item" href="/dashboard" aria-label="dashboard">{% block spin_dashboard %}{% endblock %}Dashboard</a>
                 </li>
@@ -25,7 +26,7 @@
                 <li class="nav-item">
                     <a class="menu-item" href="/login" aria-label="login">{% block spin_login %}{% endblock %}Login</a>
                 </li>
-                {% endif %}
+                {% endif %} -->
                 <li class="nav-item">
                     <a class="menu-item" href="/" aria-label="about">{% block spin_about %}{% endblock %}About</a>
                 </li>
@@ -36,8 +37,8 @@
         </div>
     </div>
     {% block body %}{% endblock %}
-    <div class="footer">
-        <div class="container">
+    <div class="footer" style="width: 100%">
+        <div class="container" style="height: auto;">
             <p>&copy; Apurva Jaiswal &nbsp;&nbsp;|&nbsp;&nbsp; Suyash Mihir</p>
         </div>
     </div>

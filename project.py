@@ -128,7 +128,7 @@ def dashboard():
 # @app.route('/')
 @app.route('/homepage')
 def homepage():
-    return render_template('homepage1.html', logged_in=logged_in, message = loginmsg, alert=alert)
+    return render_template('homepage1.html', title="Home", logged_in=logged_in, message = loginmsg, alert=alert)
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=8000, debug=True)

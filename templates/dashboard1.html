@@ -31,14 +31,30 @@
         overflow-y: scroll;
         height: 500px;
     }
+
     .container {
-      display: flex;
+      display: flexbox;
       flex-direction: column;
       align-items: center;
       justify-content:center;
-      height: 100vh;
+      /* margin-top: 20px; */
     }
+    
     button:hover {
+        background-color:#4CAF50;
+        color: white;
+    }
+
+    .form-elem{
+        width: 80%;
+        color: #333;
+    }
+
+    .phtext{
+        color: #333;
+    }
+
+    #predict:hover{
         background-color:#4CAF50;
         color: white;
     }
@@ -51,25 +67,25 @@
 {% block spin_dashboard %}<span class="spinner-grow spinner-grow-sm"></span>{% endblock %}
 
 {% block body %}
-{% if logged_in %}
+<!-- { % if logged_in % } -->
 <style>
 .navbar-brand{
     background-color: #17A2B8;
     box-shadow: none;
 }
 </style>
-<div class="container-fluid">
-    <div class="row" style="margin-top: 60px;">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+<!-- <div class="container-fluid">
+    <div class="row" style="margin-top: 60px;"> -->
+        <!-- <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="top: 0px;">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" - ->
                             <span data-feather="bar-chart-2"></span>Training Dataset
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" - ->
                             <span data-feather="bar-chart-2"></span>Training Report
                         </a>
                     </li>
@@ -85,71 +101,71 @@
                     </li>
                 </ul>
             </div>
-        </nav>
+        </nav> -->
         
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2" style="margin-top: -50px">Dashboard</h1>
-            </div>
-            {% if message %}
-            <div class="row" style="margin: 50px 70px -30px;">
-                <div class="col-sm-12 alert alert-{{ alert }}" role="alert">
-                    {{ message }}
-                </div>
-            </div>       
-            {% endif %}
-            <div id="transaction_div"  style="display: none;">
-                <div class="container">
-                    <form method="POST" enctype="multipart/form-data">
-                        <h3>Transaction Details Entry</h3><br>
-                        <label for="trans_type">Select Transaction Type : </label>
-                        <select name="trans_type" id="trans_type">
-                            <option value="PAYMENT">PAYMENT</option>
-                            <option value="CASH_OUT">CASH_OUT</option>
-                            <option value="DEBIT">DEBIT</option>
-                            <option value="TRANSFER">TRANSFER</option>
-                            <option value="CASH_IN">CASH_IN</option>
-                        </select>
-                        <br><br>
-                        <label for="tans_amt">Enter Transaction Amount : </label>
-                        <input type="number" name="trans_amt" placeholder="Enter Transaction Amount" required>
-                        <br><br>
-                        <label for="tans_nameOrig">Enter Original Account Number : </label>
-                        <input type="text" name="trans_nameOrig" placeholder="Enter Original Account Number" required>
-                        <br><br>
-                        <label for="tans_oldbalanceOrg">Enter Old Balance of Original Account : </label>
-                        <input type="number" name="trans_oldbalanceOrg" placeholder="Enter Old Balance" required>
-                        <br><br>
-                        <label for="tans_newbalanceOrig">Enter New Balance of Original Account : </label>
-                        <input type="number" name="trans_newbalanceOrig" placeholder="Enter New Balance" required>
-                        <br><br>
-                        <label for="tans_nameDest">Enter Destination Account Number : </label>
-                        <input type="text" name="trans_nameDest" placeholder="Enter Destination Account Number" required>
-                        <br><br>
-                        <label for="tans_oldbalanceDest">Enter Old Balance of Destination Account : </label>
-                        <input type="number" name="trans_oldbalanceDest" placeholder="Enter Old Balance" required>
-                        <br><br>
-                        <label for="tans_newbalanceDest">Enter New Balance of Destination Account : </label>
-                        <input type="number" name="trans_newbalanceDest" placeholder="Enter New Balance" required><br><br>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </main>
-    </div>
-</div>
-{% else %}
-<div class="row row-col-6" style="margin: 75px 50px; background-color: rgba(65, 146, 179, 0.1);">
-    <div class="col card mx-auto d-block">
-        <div class="card-body text-center" style="padding: 50px; margin: 50px;">
-            <h3>First Log In to view contents of this page.!</h3><br>
-            <form class="text-center">
-                <a href="/login"><button type="button" class="btn btn-danger col-sm-6 text-center rounded-pill">Login Now</button></a>
-            </form>
+    <main role="main" class="px-4" style="margin-left: auto; margin-right: auto;">
+        <div class="px-5 py-3 border-bottom">
+            <h1 class="h2" style="margin-top: -50px">Data Entry</h1>
         </div>
-    </div>
-</div>
-{% endif %}
+        {% if message %}
+        <div class="row" style="margin: 50px 70px -30px;">
+            <div class="col-sm-12 alert alert-{{ alert }}" role="alert">
+                {{ message }}
+            </div>
+        </div>       
+        {% endif %}
+        <div id="transaction_div"  style="display: flex;">
+            <div class="container">
+                <div class="row mt-5" style="background-color: #333; color: beige;">
+                    <div class="col-md-6 p-3">
+                        <form method="POST" enctype="multipart/form-data" class="ml-3">
+                            <h3>Transaction Details</h3><br>
+                            <div class="form-floating mb-2">
+                                <select class="form-select form-elem" id="trans_type" aria-label="Transaction Type" required>
+                                    <option value="PAYMENT">PAYMENT</option>
+                                    <option value="CASH_OUT">CASH_OUT</option>
+                                    <option value="DEBIT">DEBIT</option>
+                                    <option value="TRANSFER">TRANSFER</option>  
+                                    <option value="CASH_IN">CASH_IN</option>
+                                </select>
+                                <label class="phtext" for="floatingSelect">Transaction Type</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="number" class="form-control form-elem" name="trans_amt" id="trans_amt" placeholder="Transaction Amount" required>
+                                <label class="phtext" for="trans_amt">Transaction Amount</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control form-elem" name="trans_nameOrig" id="trans_nameOrig" placeholder="Source Account" required>
+                                <label class="phtext" for="trans_nameOrig">Source Account</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="number" class="form-control form-elem" name="trans_oldbalanceOrg" id="trans_oldbalanceOrg" placeholder="Old Balance" required>
+                                <label class="phtext" for="trans_oldbalanceOrg">Source Account Old Balance</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="number" class="form-control form-elem" name="trans_newbalanceOrig" id="trans_newbalanceOrig" placeholder="New Balance" required>
+                                <label class="phtext" for="trans_newbalanceOrig">Source Account New Balance</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control form-elem" name="trans_nameDest" id="trans_nameDest" placeholder="Destination Account" required>
+                                <label class="phtext" for="trans_nameDest">Destination Account</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control form-elem" name="tans_oldbalanceDest" id="tans_oldbalanceDest" placeholder="Old Balance" required>
+                                <label class="phtext" for="tans_oldbalanceDest">Destination Account Old Balance</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control form-elem" name="trans_newbalanceDest" id="trans_newbalanceDest" placeholder="New Balance" required>
+                                <label class="phtext" for="trans_newbalanceDest">Destination Account New Balance</label>
+                            </div>
+                            <button id="predict" type="submit" class="btn btn-primary px-3 rounded-5" style="margin-left: 30%;">Predict</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6 data-entry-image"></div>
+                </div>
+            </div>
+        </div>
+    </main>
 <br>
 {% endblock %}
 
@@ -163,20 +179,4 @@
 <script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <!-- <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script> -->
-<script type="text/javascript">
-    // var graphs = {{ graphJSON|safe }}
-    // var ids = {{ ids|safe }}
-    // for(var i in graphs)
-    // {
-    //     Ploly.plot(ids[i], graphs[i].data, graphs[i].layout || {})
-    // }
-    function showForm() {
-        var x = document.getElementById("transaction_div");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
 {% endblock %}
