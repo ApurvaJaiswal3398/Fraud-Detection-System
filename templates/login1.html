@@ -21,6 +21,13 @@
     #frgt:hover{
         text-decoration: underline;
     }
+    .phtext{
+        color: #333;
+    }
+
+    .login-card {
+        padding: 50px 100px;
+    }
 </style>
 {% endblock %}
 
@@ -39,23 +46,33 @@
     <!-- <div class="row  row-col-2" style="margin: 50px;"> -->
     <div class="row justify-content-md-center" style="margin: 50px;">
         <div class="col-6">
-            <div class="card">
-                <div class="card-body bg-dark text-light single-card-tab rounded" style="padding: 50px 100px;">
+            <!-- <div class="card"> -->
+                <div class="bg-dark text-light rounded login-card" >
                     <form method="POST" name="login" onsubmit="return passwordvalidate()">
                         <div class="h3 mb-3 font-weight-normal text-center">Login</div><hr>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="login_email">Username</label>
-                            <input type="email" class="form-control" name="login_email" id="login_email" aria-describedby="EmailId" placeholder="Enter Username" required><!-- onblur="checkemail()" -->
+                            <input type="email" class="form-control" name="login_email" id="login_email" aria-describedby="EmailId" placeholder="Enter Username" required><!-- onblur="checkemail()" - ->
+                        </div> -->
+                        <div class="form-floating mb-2">
+                            <input type="email" class="form-control form-elem" name="login_email" id="login_email" placeholder="Transaction Amount" required>
+                            <label class="phtext" for="login_email">Email</label>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="login_password">Password</label>
                             <input type="password" class="form-control" name="login_password" id="login_password" placeholder="Enter Password" onblur="checkpassword()" required>
                             <span class="form-text"><a id='frgt' class="text-light" href='/forgotpassword'>Forgot Password</a></span>
-                        </div><br>
+                        </div><br> -->
+                        <div class="form-floating mb-2">
+                            <!-- <label for="login_password" class="form-label">Password</label> -->
+                            <input type="password" class="form-control form-elem" name="login_password" id="login_password" placeholder="Enter Password" required>
+                            <label class="phtext" for="login_password">Password</label>
+                            <span class="form-text"><a id='frgt' class="text-light" href='/forgotpassword'>Forgot Password?</a></span>
+                        </div>
                         <button class="btn btn-danger col-sm-6 rounded-pill">Sign In</button>
                     </form>
                 </div>
-            </div>
+            <!-- </div> -->
         </div>
         <!-- <div class="col">
             <div class="card">
@@ -67,27 +84,6 @@
                 </div>
             </div>
         </div> -->
-    </div>
-    <div class="container text-light">
-        <div class="row mt-5 bg-dark rounded-3 d-flex">
-            <div class="col-md-2"></div>
-            <div class="col-md-8 bg-danger">
-                <form method="POST">
-                    <h2 class="my-3">Your Options</h2>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="country" id="country" placeholder="Enter country name">
-                        <label for="country">Country</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" name="year" id="year" placeholder="Enter year">
-                        <label for="year">Year</label>
-                    </div>
-                    <div class="d-grid gap-2 mb-3">
-                        <button class="btn btn-success">Update Result</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
 <div id="test"></div>

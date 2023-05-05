@@ -7,6 +7,8 @@ from sqlalchemy.orm import sessionmaker,scoped_session
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import sessionmaker, scoped_session
 # from werkzeug.utils import secure_filename
+from fraud_detection import predict
+import pandas as pd
 
 
 logged_in = False
@@ -113,15 +115,23 @@ def dashboard():
         trans_nameDest=request.form.get('trans_nameDest')
         trans_oldbalanceDest=request.form.get('trans_oldbalanceDest')
         trans_newbalanceDest=request.form.get('trans_newbalanceDest')
+        
+        print(f'Type : {trans_type}\nAmount : {trans_amt}\nSender : {trans_nameOrig}\nSender Old : {trans_oldbalanceOrig}\nSender New : {trans_newbalanceOrig}\nReceiver : {trans_nameDest}\nReceiver Old : {trans_oldbalanceDest}\nReceiver New : {trans_newbalanceDest}')
 
-        db = getdb()
-        db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest))
-        db.commit()
-        db.close()
-        print('Data Saved Successfully')
-        alert = 'success'
-        loginmsg = 'Data Saved Successfully!'
-        return redirect('/dashboard')
+        if trans_type and trans_amt and trans_nameOrig and trans_oldbalanceOrig and trans_newbalanceOrig and trans_nameDest and trans_oldbalanceDest and trans_newbalanceDest:
+            db = getdb()
+            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest))
+            db.commit()
+            db.close()
+            print('Data Saved Successfully')
+            alert = 'success'
+            loginmsg = 'Data Saved Successfully!'
+            # return redirect('/dashboard')
+        else:
+            print('Data Not Saved')
+            alert = 'danger'
+            loginmsg = 'Data Not Saved!'
+            # return redirect('/dashboard')
     print(f"Logged In : {logged_in}")
     return render_template('dashboard1.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert)#, graphJSON=graphJSON, ids=ids)
 
@@ -129,6 +139,24 @@ def dashboard():
 @app.route('/homepage')
 def homepage():
     return render_template('homepage1.html', title="Home", logged_in=logged_in, message = loginmsg, alert=alert)
+
+@app.route('/predict/fraud/<int:id>/record', methods=['GET', 'POST'])
+def predict_fraud(id):
+    db = getdb()
+    transaction = db.query(Transaction).filter_by(id=id).first()
+    if transaction:
+        # convert to data frame
+        df = pd.DataFrame([transaction.__dict__])
+        # drop the id column
+        df = df.drop(['id'], axis=1)
+        pp = 'models\v1\ann_fraud_detection_preprocessor.jb'
+        mp  = 'models\v1\ann_fraud_detection.h5'
+        result = predict(model_path=mp, prepro_path=pp, data_dict=df)
+        print(result)
+        return render_template('predict_fraud.html', title="Predict Fraud", logged_in=logged_in, message = loginmsg, alert=alert, result=result)
+    else:
+        return redirect('/dashboard')
+
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=8000, debug=True)

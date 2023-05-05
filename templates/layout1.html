@@ -18,20 +18,23 @@
                 <li class="nav-item">
                     <a class="menu-item" href="/" aria-label="home">{% block spin_home %}{% endblock %}Home</a>
                 </li>
-                <!-- {% if logged_in %}
+                {% if logged_in %}
                 <li class="nav-item">
                     <a class="menu-item" href="/dashboard" aria-label="dashboard">{% block spin_dashboard %}{% endblock %}Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="menu-item" href="/account" aria-label="register">{% block spin_account %}{% endblock %}Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="menu-item" href="/logout" aria-label="register">Log Out</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
                     <a class="menu-item" href="/login" aria-label="login">{% block spin_login %}{% endblock %}Login</a>
                 </li>
-                {% endif %} -->
+                {% endif %}
                 <li class="nav-item">
                     <a class="menu-item" href="/" aria-label="about">{% block spin_about %}{% endblock %}About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="menu-item" href="/" aria-label="contact">{% block spin_contact %}{% endblock %}Contact</a>
                 </li>
             </ul>
         </div>

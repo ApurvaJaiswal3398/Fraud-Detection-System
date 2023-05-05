@@ -7,12 +7,12 @@
     <div class="container">  
         <div class="main">
             <h1 class="rounded-4" style="color: beige; background-color: rgba(58, 58, 58, 0.8); padding: 10px;">Fraud Detection</h1>
-            <!-- { % if logged_in % } -->
-            <a id="dashboard_link" href="/dashboard" class="btn-main rounded-5">Start</a>
-            <!-- <a id="logout_link" href="/logout" class="btn-main rounded-5">Log out</a>
-            { % else % }
+            {% if logged_in %}
+            <a id="dashboard_link" href="/dashboard" class="btn-main rounded-5">Dashboard</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="logout_link" href="/logout" class="btn-main rounded-5">Log out</a>
+            {% else %}
             <a id="login_link" href="/login" class="btn-main rounded-5">Log In</a>
-            { % endif % } -->
+            {% endif %}
         </div>
     </div>
 </div>
