@@ -4,4 +4,8 @@ plotly
 seaborn
 sklearn
 imblearn
-tensorflow 
+tensorflow
+keras
+joblib
+sqlalchemy
+flask

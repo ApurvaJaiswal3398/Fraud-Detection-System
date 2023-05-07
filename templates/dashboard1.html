@@ -74,18 +74,18 @@
     box-shadow: none;
 }
 </style>
-<div class="container-fluid">
-    <div class="row" style="margin-top: 60px;">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="top: 0px;">
+<!-- <div class="container-fluid">
+    <div class="row" style="margin-top: 60px;"> -->
+        <!-- <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="z-index: 0;">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" - ->
                             <span data-feather="bar-chart-2"></span>Training Dataset
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" - ->
                             <span data-feather="bar-chart-2"></span>Training Report
                         </a>
                     </li>
@@ -101,7 +101,7 @@
                     </li>
                 </ul>
             </div>
-        </nav>
+        </nav> -->
         
     <main role="main" class="px-4" style="margin-left: auto; margin-right: auto;">
         <div class="px-5 py-3 border-bottom">
@@ -121,8 +121,8 @@
                         <form method="POST" enctype="multipart/form-data" class="ml-3">
                             <h3>Transaction Details</h3><br>
                             <div class="form-floating mb-2">
-                                <select class="form-select form-elem" id="trans_type" aria-label="Transaction Type" required>
-                                    <option value="PAYMENT">PAYMENT</option>
+                                <select class="form-select form-elem" id="trans_type" name="trans_type" aria-label="Transaction Type" required>
+                                    <option value="PAYMENT" selected>PAYMENT</option>
                                     <option value="CASH_OUT">CASH_OUT</option>
                                     <option value="DEBIT">DEBIT</option>
                                     <option value="TRANSFER">TRANSFER</option>  
@@ -151,8 +151,8 @@
                                 <label class="phtext" for="trans_nameDest">Destination Account</label>
                             </div>
                             <div class="form-floating mb-2">
-                                <input type="text" class="form-control form-elem" name="tans_oldbalanceDest" id="tans_oldbalanceDest" placeholder="Old Balance" required>
-                                <label class="phtext" for="tans_oldbalanceDest">Destination Account Old Balance</label>
+                                <input type="text" class="form-control form-elem" name="trans_oldbalanceDest" id="trans_oldbalanceDest" placeholder="Old Balance" required>
+                                <label class="phtext" for="trans_oldbalanceDest">Destination Account Old Balance</label>
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control form-elem" name="trans_newbalanceDest" id="trans_newbalanceDest" placeholder="New Balance" required>
@@ -167,8 +167,8 @@
         </div>
     </main>
 <br>
-</div>
-</div>
+<!-- </div>
+</div> -->
 {% else %}
 <div class="col-6 mx-auto my-5 p-5 border">
     <h3 class="text-center">First Log In to view contents of this page.!</h3><br>

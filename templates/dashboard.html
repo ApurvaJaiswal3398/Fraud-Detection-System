@@ -8,25 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
 
 {% block css %}
-<meta name="description" content="">
-<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-<meta name="generator" content="Jekyll v3.8.6">
-
-<!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/dashboard/"> -->
-
 <!-- Bootstrap core CSS -->
 <link href="https://getbootstrap.com/docs/4.4/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-<!-- Favicons -->
-<!-- <link rel="apple-touch-icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180"> -->
-<!-- <link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png"> -->
-<!-- <link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png"> -->
-<link rel="manifest" href="{{ url_for('static', filename='json/manifest.json') }}">
-<link rel="mask-icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
-<!-- <link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon.ico"> -->
-<meta name="msapplication-config" content="https://getbootstrap.com/docs/4.4/assets/img/favicons/browserconfig.xml">
-<meta name="theme-color" content="#563d7c">
-
+<!-- Bootstrap CSS v5.2.1 -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous"> -->
+<!--Below Stylesheet link is important to diplay the datatables in the HTML file -->
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <style>
     .bd-placeholder-img {
         font-size: 1.125rem;
@@ -58,6 +45,9 @@
         background-color:#4CAF50;
         color: white;
     }
+    #DataTables_Table_0_wrapper{
+        width: 100%;
+    }
 </style>
 <!-- Custom styles for this template -->
 <!-- <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet"> -->
@@ -81,7 +71,6 @@
 {% if logged_in %}
 <style>
 .navbar-brand{
-    background-color: #17A2B8;
     box-shadow: none;
 }
 </style>
@@ -115,19 +104,19 @@
                             <span data-feather="bar-chart-2"></span>Billing
                         </a>
                     </li> -->
-                    <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                    <!-- <li class="nav-item">
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" - ->
                             <span data-feather="bar-chart-2"></span>Training Dataset
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" -->
+                        <a class="nav-link btn-outline-dark bg-light" id="chart"><!-- onclick="billingChart()" - ->
                             <span data-feather="bar-chart-2"></span>Training Report
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart">
-                            <span data-feather="bar-chart-2"></span>Fraud Prediction
+                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showTable()">
+                            <span data-feather="bar-chart-2"></span>Transaction Details
                         </a>
                     </li>
                     <li class="nav-item">
@@ -179,7 +168,7 @@
         </nav>
         
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-dark">
                 <h1 class="h2" style="margin-top: -50px">Dashboard</h1>
                 <!-- <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
@@ -192,13 +181,13 @@
                     </button>
                 </div> -->
             </div>
-            {% if message %}
+            <!-- {% if message %}
             <div class="row" style="margin: 50px 70px -30px;">
                 <div class="col-sm-12 alert alert-{{ alert }}" role="alert">
                     {{ message }}
                 </div>
             </div>       
-            {% endif %}
+            {% endif %} -->
             <!-- <div class="chart" id="bargraph">
                 <script>
                     // var graphs = {{ plot | safe }};
@@ -345,7 +334,7 @@
                     <form method="POST" enctype="multipart/form-data">
                         <h3>Transaction Details Entry</h3><br>
                         <label for="trans_type">Select Transaction Type : </label>
-                        <select name="trans_type" id="trans_type">
+                        <select name="trans_type" id="trans_type" name="trans_type">
                             <option value="PAYMENT">PAYMENT</option>
                             <option value="CASH_OUT">CASH_OUT</option>
                             <option value="DEBIT">DEBIT</option>
@@ -375,6 +364,15 @@
                         <input type="number" name="trans_newbalanceDest" placeholder="Enter New Balance" required><br><br>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+                </div>
+            </div>
+            <div id="transtable" style="display: block;">
+                <div class="container" style="height: 80vh; width: auto; overflow-x: scroll;">
+                    <div class="row" style="width: 100%; margin-top: 0;">
+                        <div class="col-md-12">
+                            {{result|safe}}
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- <div id="UserTable">
@@ -557,30 +555,39 @@
 {% endblock %}
 
 {% block js %}
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.4/dist/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-<script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!--Below JQuery link is important to diplay the datatables in the HTML file -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<!--Below JS link is important to diplay the datatables in the HTML file -->
+<script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <!-- <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script> -->
 <script type="text/javascript">
-    // var graphs = {{ graphJSON|safe }}
-    // var ids = {{ ids|safe }}
-    // for(var i in graphs)
-    // {
-    //     Ploly.plot(ids[i], graphs[i].data, graphs[i].layout || {})
-    // }
+    // To display the Transaction Entry form
     function showForm() {
-        var x = document.getElementById("transaction_div");
-        if (x.style.display === "none") {
-            x.style.display = "block";
+        var transform = document.getElementById("transaction_div");
+        var transtable = document.getElementById("transtable");
+        if (transform.style.display === "none") {
+            transform.style.display = "block";
+            transtable.style.display = "none";
         } else {
-            x.style.display = "none";
+            transform.style.display = "none";
         }
     }
+    // To display the 'Transaction' Table
+    function showTable() {
+        var transform = document.getElementById("transaction_div");
+        var transtable = document.getElementById("transtable");
+        if (transtable.style.display === "none") {
+            transtable.style.display = "block";
+            transform.style.display = "none";
+        } else {
+            transtable.style.display = "none";
+        }
+    }
+    // To make the dataframe look like one in its respective position (apply the properties of dataframe added 
+    // by jquery cdn, to make it interactive)
+    $(function () {
+        $('.dataframe').DataTable();  //inspect the element of table to  get the classname
+    });
 </script>
 <!-- <script>
 (function () {

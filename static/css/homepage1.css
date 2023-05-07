@@ -44,6 +44,7 @@ html, body {
 
 .menu-item:hover {
     color: #fff;
+    text-decoration: none;
 }
 
 .main {

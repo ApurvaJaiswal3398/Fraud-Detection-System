@@ -11,7 +11,7 @@ def load_preprocessor(path):
 
 def predict(model_path, prepro_path, data_dict):
     model = load_model(model_path)
-    p = load_preprocessor()
+    p = load_preprocessor(prepro_path)
     X = p.transform(data_dict)
     y_pred = model.predict(X)
     return y_pred
@@ -31,7 +31,7 @@ if __name__ == '__main__':
         'newbalanceDest': [0],
     })
     model_path = r'models\v1\ann_fraud_detection.h5'
-    pp_path = r'models\v1\preprocessor.joblib'
+    pp_path = r'models\v1\ann_fraud_detection_preprocessor.jb'
     out = predict(model_path, pp_path, data)
     print(out[0][0] > 0.5)
     if out[0][0] > 0.5:

@@ -32,10 +32,17 @@ def noneall():
 
 app = Flask(__name__)
 
+#function to load database table into a pandas dataframe
+def load_data():
+    engine = create_engine('sqlite:///project.sqlite').connect()    # Creating Database Engine
+    df = pd.read_sql_table('transactions', engine)  # Reading Database Table into Pandas DataFrame
+    print(df.head())    # Printing DataFrame
+    return df   # Returning DataFrame
+
 def getdb():
     engine = create_engine('sqlite:///project.sqlite')  # Creating Database Engine
     DBSession = sessionmaker(bind=engine)   # Creating Session for Database
-    session = scoped_session(DBSession)
+    session = scoped_session(DBSession) # Creating Scoped Session for Database
     return session
 
 @app.route('/')
@@ -94,6 +101,17 @@ def logout():
 
 @app.route('/dashboard', methods=['GET','POST'])
 def dashboard():
+    global logged_in
+    global loginmsg
+    global alert
+    df = load_data()
+    if request.method == 'POST':
+        # df = df.to_html()
+        return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
+    return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
+
+@app.route('/insert', methods=['GET','POST'])
+def insert():
     # graph = create_plot()
     # ids,graphJSON = index()
     # User_cursor = Users.find().sort("username").limit(8)
@@ -149,8 +167,8 @@ def predict_fraud(id):
         df = pd.DataFrame([transaction.__dict__])
         # drop the id column
         df = df.drop(['id'], axis=1)
-        pp = 'models\v1\ann_fraud_detection_preprocessor.jb'
-        mp  = 'models\v1\ann_fraud_detection.h5'
+        pp = r'models\\v1\\ann_fraud_detection_preprocessor.jb'
+        mp = r'models\\v1\\ann_fraud_detection.h5'
         result = predict(model_path=mp, prepro_path=pp, data_dict=df)
         print(result)
         return render_template('predict_fraud.html', title="Predict Fraud", logged_in=logged_in, message = loginmsg, alert=alert, result=result)
