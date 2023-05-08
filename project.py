@@ -100,27 +100,19 @@ def logout():
     print(f"Logged in : {logged_in}")
     return redirect('/login')
 
-@app.route('/dashbard', methods=['GET','POST'])
-def dashboard():
-    global logged_in
-    global loginmsg
-    global alert
-    df = load_data()
-    if request.method == 'POST':
-        # df = df.to_html()
-        return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
-    return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
+# @app.route('/insert', methods=['GET','POST'])
+# def insert():
+#     global logged_in
+#     global loginmsg
+#     global alert
+#     df = load_data()
+#     if request.method == 'POST':
+#         # df = df.to_html()
+#         return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
+#     return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
 
 @app.route('/dashboard', methods=['GET','POST'])
-def insert():
-    # graph = create_plot()
-    # ids,graphJSON = index()
-    # User_cursor = Users.find().sort("username").limit(8)
-    # Cart_cursor = Carts.find().sort("_id").limit(8)
-    # Product_cursor = Products.find().sort("_id")
-    # Customer_cart_cursor = Customer_Cart.find().sort("used_date").limit(8)
-    # Billing_cursor = Billing.find().sort("_id")
-    # billing_chart_data = Billing.find().sort("date")
+def dashboard():
     global loginmsg
     loginmsg = data = None
     global alert
@@ -138,10 +130,32 @@ def insert():
         
         # Creting dictionary for extracted data
         data = {'type': trans_type, 'amount': trans_amt, 'srcacc': trans_nameOrig, 'srcold': trans_oldbalanceOrig, 'srcnew': trans_newbalanceOrig, 'destacc': trans_nameDest, 'destold': trans_oldbalanceDest, 'destnew': trans_newbalanceDest, 'datetime': datetime.now(), 'isFraud': 0}
-        tdata = {'step': [1], 'type': [trans_type], 'amount': [trans_amt], 'name_orig': [trans_nameOrig], 'oldbalanceOrg': [trans_oldbalanceOrig], 'newbalanceOrig': [trans_newbalanceOrig], 'name_dest': [trans_nameDest], 'oldbalanceDest': [trans_oldbalanceDest], 'newbalanceDest': [trans_newbalanceDest], 'datetime': datetime.now(), 'isFraud': 0}
         if trans_type and trans_amt and trans_nameOrig and trans_oldbalanceOrig and trans_newbalanceOrig and trans_nameDest and trans_oldbalanceDest and trans_newbalanceDest:
+            tdata = pd.DataFrame({'step': [1],
+                     'type': [trans_type],
+                     'amount': [trans_amt],
+                     'name_orig': [trans_nameOrig],
+                     'oldbalanceOrg': [trans_oldbalanceOrig],
+                     'newbalanceOrig': [trans_newbalanceOrig],
+                     'name_dest': [trans_nameDest],
+                     'oldbalanceDest': [trans_oldbalanceDest],
+                     'newbalanceDest': [trans_newbalanceDest],
+                     'datetime': datetime.now(),
+                     'is_Fraud': 0
+                    })
+            print(f'DataFrame => {tdata}')
+            model_path = r'models\v1\ann_fraud_detection.h5'
+            pp_path = r'models\v1\ann_fraud_detection_preprocessor.jb'
+            out = predict(model_path, pp_path, tdata)
+            print(out[0][0] > 0.5)
+            if out[0][0] > 0.5:
+                print('Fraud')
+                data['isFraud'] = isFraud = 1
+            else:
+                print('Not Fraud')
+                data['isFraud'] = isFraud = 0
             db = getdb()
-            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest, date_time=datetime.now(), is_Fraud=0))
+            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest, date_time=datetime.now(), is_Fraud=isFraud))
             db.commit()
             db.close()
             print('Data Saved Successfully')
@@ -157,7 +171,6 @@ def insert():
     print(f"Data : {data}")
     return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert, result = df.to_html(), data=data)
 
-# @app.route('/')
 @app.route('/homepage')
 def homepage():
     return render_template('homepage1.html', title="Home", logged_in=logged_in, message = loginmsg, alert=alert)

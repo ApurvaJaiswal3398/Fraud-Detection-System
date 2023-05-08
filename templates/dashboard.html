@@ -720,6 +720,12 @@
     $(function () {
         $('.dataframe').DataTable();  //inspect the element of table to  get the classname
     });
+
+    window.addEventListener('load', () => {
+        document.getElementsByName("thead").style.color == "white";
+        document.getElementsByName("thead").style.backgroundColor == "#333333";
+        
+    });
 </script>
 <!-- <script>
 (function () {
