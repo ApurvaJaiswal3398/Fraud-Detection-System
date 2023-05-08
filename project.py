@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect
 from database import Transaction
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker,scoped_session  
+from sqlalchemy.orm import sessionmaker,scoped_session
+from datetime import datetime
 # import plotly.express as px
 # from database import Vehicle
 # from sqlalchemy import create_engine
@@ -99,7 +100,7 @@ def logout():
     print(f"Logged in : {logged_in}")
     return redirect('/login')
 
-@app.route('/dashboard', methods=['GET','POST'])
+@app.route('/dashbard', methods=['GET','POST'])
 def dashboard():
     global logged_in
     global loginmsg
@@ -110,7 +111,7 @@ def dashboard():
         return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
     return render_template('dashboard.html', title='Dashboard', result = df.to_html(), logged_in=logged_in, message=loginmsg, alert=alert)
 
-@app.route('/insert', methods=['GET','POST'])
+@app.route('/dashboard', methods=['GET','POST'])
 def insert():
     # graph = create_plot()
     # ids,graphJSON = index()
@@ -121,8 +122,9 @@ def insert():
     # Billing_cursor = Billing.find().sort("_id")
     # billing_chart_data = Billing.find().sort("date")
     global loginmsg
-    loginmsg = None
+    loginmsg = data = None
     global alert
+    df = load_data()
     if request.method == 'POST':
         # if request.form['submit_button'] == 'Submit':
         trans_type=request.form.get('trans_type') 
@@ -134,11 +136,12 @@ def insert():
         trans_oldbalanceDest=request.form.get('trans_oldbalanceDest')
         trans_newbalanceDest=request.form.get('trans_newbalanceDest')
         
-        print(f'Type : {trans_type}\nAmount : {trans_amt}\nSender : {trans_nameOrig}\nSender Old : {trans_oldbalanceOrig}\nSender New : {trans_newbalanceOrig}\nReceiver : {trans_nameDest}\nReceiver Old : {trans_oldbalanceDest}\nReceiver New : {trans_newbalanceDest}')
-
+        # Creting dictionary for extracted data
+        data = {'type': trans_type, 'amount': trans_amt, 'srcacc': trans_nameOrig, 'srcold': trans_oldbalanceOrig, 'srcnew': trans_newbalanceOrig, 'destacc': trans_nameDest, 'destold': trans_oldbalanceDest, 'destnew': trans_newbalanceDest, 'datetime': datetime.now(), 'isFraud': 0}
+        tdata = {'step': [1], 'type': [trans_type], 'amount': [trans_amt], 'name_orig': [trans_nameOrig], 'oldbalanceOrg': [trans_oldbalanceOrig], 'newbalanceOrig': [trans_newbalanceOrig], 'name_dest': [trans_nameDest], 'oldbalanceDest': [trans_oldbalanceDest], 'newbalanceDest': [trans_newbalanceDest], 'datetime': datetime.now(), 'isFraud': 0}
         if trans_type and trans_amt and trans_nameOrig and trans_oldbalanceOrig and trans_newbalanceOrig and trans_nameDest and trans_oldbalanceDest and trans_newbalanceDest:
             db = getdb()
-            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest))
+            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest, date_time=datetime.now(), is_Fraud=0))
             db.commit()
             db.close()
             print('Data Saved Successfully')
@@ -151,7 +154,8 @@ def insert():
             loginmsg = 'Data Not Saved!'
             # return redirect('/dashboard')
     print(f"Logged In : {logged_in}")
-    return render_template('dashboard1.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert)#, graphJSON=graphJSON, ids=ids)
+    print(f"Data : {data}")
+    return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert, result = df.to_html(), data=data)
 
 # @app.route('/')
 @app.route('/homepage')

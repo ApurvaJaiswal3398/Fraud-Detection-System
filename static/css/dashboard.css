@@ -13,7 +13,12 @@ body {
 */
 
 .data-entry-image{
-    background-image: url("../../static/images/money-transfer.jpg");
+    background-image: url("../../static/images/conceptual-display-fraud-detection-2.jpg");
+    background-size: 100%;
+}
+
+.prediciton-image{
+    background-image: url("../../static/images/stop-fraud.jpg");
     background-size: contain;
 }
 
@@ -34,6 +39,10 @@ body {
     padding-top: .5rem;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+.btn-outline-info:hover{
+    background-color: transparent;
 }
 
 @supports ((position: -webkit-sticky) or (position: sticky)) {
