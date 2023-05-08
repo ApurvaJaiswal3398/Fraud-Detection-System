@@ -10,6 +10,11 @@ from datetime import datetime
 # from werkzeug.utils import secure_filename
 from fraud_detection import predict
 import pandas as pd
+import random
+import string
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 logged_in = False
@@ -88,6 +93,85 @@ def login():
             noneall()
     print(f"Logged In : {logged_in}\nOTP : {otp}\nAdmin Pass : {adminpass}\nReceiver : {receiver}\nLogin Msg : {loginmsg}\nPassword Changed : {pschanged}")
     return render_template('login1.html', title='Login', logged_in=logged_in, user=logged_in_detail, message=message, alert=alert)
+
+# Function to generate and send customised email while resetting password
+def send_mail(cpass):
+    sender = 'jaiswal.apurva.aj011@gmail.com'
+    subject = 'FraudSense Account Password Reset OTP Mail'
+    global otp
+    global adminpass
+    adminpass = cpass
+    otp = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    msg = '''<h4 style='color: #292b2c;'>FraudSense Account</h4>
+        <big><h1 style='color: #0275d8;'>Password reset code</h1></big>
+        <p>Please use this code to reset the password for the FraudSense account with email ''' + receiver + '''.</p><br>
+        <p>Here is your code : <big><b>''' + otp + '''</b></big><br><br>Thanks.<br>The FraudSense Team</p>'''
+    success = False
+    m = MIMEMultipart('alternative')
+    m['From'] = sender
+    m['To'] = receiver
+    m['Subject'] = subject
+    m.attach(MIMEText(msg,'html'))
+    print(f'sender : {sender}\nReceiver : {receiver}\nOTP : {otp}\nMessage : {msg}\nSuccess : {success}\nMIME Content : {m}')
+
+    # con = smtplib.SMTP('smtp.gmail.com', 587)
+    con = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    print('Connected to SMTP Server')
+    # con.starttls()
+    # print('TLS Encryption Enabled')
+    try:
+        con.login(sender, cpass)
+        print('Logged In by Company Email')
+        msg_content = m.as_string()
+        print('Message Created for the Mail to be Sent : \n',msg_content)
+        # con.sendmail(sender, receiver, 'Subject: So long.\nDear Alice, so long and thanks for all the fish. Sincerely, Bob')
+        con.sendmail(sender, receiver, msg_content)
+        print('Mail Sent')
+        success = True
+    except smtplib.SMTPAuthenticationError:
+        print('Wrong Company Password Entered!')
+        otp = None
+        success = False
+    finally:
+        con.quit()
+        print('Logged out of the Company Mail')
+        print('Sending Process Ended')
+        return success
+
+@app.route('/forgotpassword', methods=['GET','POST'])
+def forgotpassword():
+    message=None
+    global logged_in
+    global receiver
+    if request.method == "POST":
+        receiver = request.form.get('receiver')
+        # admin_pass = request.form.get('admin_pass')
+        with open('E:\Fraud Detection Documents\EMAIL_PASS.pwd', 'r') as f:
+            admin_pass = f.read()
+        print("Mail Receiver : ",receiver," Company Password : ", admin_pass)
+        # x = Users.find_one({'email': receiver})
+        # print('Receiver Data : ',receiver)
+        # if x:
+        if send_mail(admin_pass):
+            print(f'Mail Sent to Receiver {receiver} with OTP : {otp}')
+            return redirect('/OTPVerification')
+        else:
+            message = 'Sender\'s Password is Wrong!'
+        # else:
+        #     message = 'No User for given Email Found!'
+    print(f"Logged In : {logged_in}")
+    return render_template('forgotpassword.html', title='Forgot Password', message=message)
+
+@app.route('/OTPVerification', methods=['GET','POST'])
+def otpverification():
+    if request.method == "POST":
+        verify = request.form.get('otp')
+        if verify == otp:
+            print('OTP Matched!')
+            return redirect('/ChangePassword')
+        else:
+            print('Wrong OTP Entered!')
+    return render_template('otpverification.html', title='OTP Verification', otp=otp)
 
 @app.route('/logout')
 def logout():
