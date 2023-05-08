@@ -434,7 +434,7 @@
                 </div>
             </div>
             <div id="transtable" style="display: none;">
-                <div class="container" style="height: auto; width: auto; overflow-x: scroll;">
+                <div class="container bg-light" style="height: auto; width: auto; overflow-x: scroll;">
                     <div class="row" style="width: 100%; margin-top: 0;">
                         <div class="col-md-12">
                             {{result|safe}}
@@ -720,201 +720,195 @@
     $(function () {
         $('.dataframe').DataTable();  //inspect the element of table to  get the classname
     });
-
-    window.addEventListener('load', () => {
-        document.getElementsByName("thead").style.color == "white";
-        document.getElementsByName("thead").style.backgroundColor == "#333333";
-        
-    });
 </script>
-<!-- <script>
-(function () {
-    'use strict'
+// <!-- <script>
+// (function () {
+//     'use strict'
     
-    feather.replace()
+//     feather.replace()
     
-    // Graphs
-    var ctx = document.getElementById('billchart')
-    var ctx2 = document.getElementById('billchart2')
-    // eslint-disable-next-line no-unused-vars
-    var lbl = []
-    var amount = []
-    var qty = []
-    {% for item in bchart %}
-        lbl.push("{{item['date']}}")                
-        amount.push("{{item['total_amount']}}")
-        qty.push("{{item['total_items']}}")
-    {% endfor %}
+//     // Graphs
+//     var ctx = document.getElementById('billchart')
+//     var ctx2 = document.getElementById('billchart2')
+//     // eslint-disable-next-line no-unused-vars
+//     var lbl = []
+//     var amount = []
+//     var qty = []
+//     {% for item in bchart %}
+//         lbl.push("{{item['date']}}")                
+//         amount.push("{{item['total_amount']}}")
+//         qty.push("{{item['total_items']}}")
+//     {% endfor %}
 
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: lbl,
-            datasets: [{
-                data: amount,
-                lineTension: 0,
-                backgroundColor: '#009dff',
-                borderColor: '#007bff',
-                borderWidth: 4,
-                pointBackgroundColor: '#007bff'
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false
-                    }
-                }]
-            },
-            legend: {
-                display: false
-            }
-        }
-    })
-    var qtyChart = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            labels: lbl,
-            datasets: [{
-                data: qty,
-                lineTension: 0,
-                backgroundColor: '#009dff',
-                borderColor: '#007bff',
-                borderWidth: 4,
-                pointBackgroundColor: '#007bff'
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false
-                    }
-                }]
-            },
-            legend: {
-                display: false
-            }
-        }
-    })
-}())
-</script>
-<script>
-    function usersTable()
-    {
-        var x = document.getElementById("UserTable");
-        var a = document.getElementById("CartTable");
-        var b = document.getElementById("ProductTable");
-        var c = document.getElementById("CCTable");
-        var d = document.getElementById("BillingTable");
-        var e = document.getElementById("BillingChart");
-        if (x.style.display === "none") 
-        {
-            x.style.display = "block";
-            a.style.display = "none";
-            b.style.display = "none";
-            c.style.display = "none";
-            d.style.display = "none";
-            e.style.display = "none";
-        // } else {
-        //     x.style.display = "none";
-        }
-    }
+//     var myChart = new Chart(ctx, {
+//         type: 'bar',
+//         data: {
+//             labels: lbl,
+//             datasets: [{
+//                 data: amount,
+//                 lineTension: 0,
+//                 backgroundColor: '#009dff',
+//                 borderColor: '#007bff',
+//                 borderWidth: 4,
+//                 pointBackgroundColor: '#007bff'
+//             }]
+//         },
+//         options: {
+//             scales: {
+//                 yAxes: [{
+//                     ticks: {
+//                         beginAtZero: false
+//                     }
+//                 }]
+//             },
+//             legend: {
+//                 display: false
+//             }
+//         }
+//     })
+//     var qtyChart = new Chart(ctx2, {
+//         type: 'line',
+//         data: {
+//             labels: lbl,
+//             datasets: [{
+//                 data: qty,
+//                 lineTension: 0,
+//                 backgroundColor: '#009dff',
+//                 borderColor: '#007bff',
+//                 borderWidth: 4,
+//                 pointBackgroundColor: '#007bff'
+//             }]
+//         },
+//         options: {
+//             scales: {
+//                 yAxes: [{
+//                     ticks: {
+//                         beginAtZero: false
+//                     }
+//                 }]
+//             },
+//             legend: {
+//                 display: false
+//             }
+//         }
+//     })
+// }())
+// </script>
+// <script>
+//     function usersTable()
+//     {
+//         var x = document.getElementById("UserTable");
+//         var a = document.getElementById("CartTable");
+//         var b = document.getElementById("ProductTable");
+//         var c = document.getElementById("CCTable");
+//         var d = document.getElementById("BillingTable");
+//         var e = document.getElementById("BillingChart");
+//         if (x.style.display === "none") 
+//         {
+//             x.style.display = "block";
+//             a.style.display = "none";
+//             b.style.display = "none";
+//             c.style.display = "none";
+//             d.style.display = "none";
+//             e.style.display = "none";
+//         // } else {
+//         //     x.style.display = "none";
+//         }
+//     }
 
-    function cartTable() {
-    var x = document.getElementById("CartTable");
-    var a = document.getElementById("UserTable");
-    var b = document.getElementById("ProductTable");
-    var c = document.getElementById("CCTable");
-    var d = document.getElementById("BillingTable");
-    var e = document.getElementById("BillingChart");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-        a.style.display = "none";
-        b.style.display = "none";
-        c.style.display = "none";
-        d.style.display = "none";
-        e.style.display = "none";
-    // } else {
-    //     x.style.display = "none";
-    }
-    }
+//     function cartTable() {
+//     var x = document.getElementById("CartTable");
+//     var a = document.getElementById("UserTable");
+//     var b = document.getElementById("ProductTable");
+//     var c = document.getElementById("CCTable");
+//     var d = document.getElementById("BillingTable");
+//     var e = document.getElementById("BillingChart");
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//         a.style.display = "none";
+//         b.style.display = "none";
+//         c.style.display = "none";
+//         d.style.display = "none";
+//         e.style.display = "none";
+//     // } else {
+//     //     x.style.display = "none";
+//     }
+//     }
 
-    function productTable() {
-    var x = document.getElementById("ProductTable");
-    var a = document.getElementById("CartTable");
-    var b = document.getElementById("UserTable");
-    var c = document.getElementById("CCTable");
-    var d = document.getElementById("BillingTable");
-    var e = document.getElementById("BillingChart");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-        a.style.display = "none";
-        b.style.display = "none";
-        c.style.display = "none";
-        d.style.display = "none";
-        e.style.display = "none";
-    // } else {
-    //     x.style.display = "none";
-    }
-    }
+//     function productTable() {
+//     var x = document.getElementById("ProductTable");
+//     var a = document.getElementById("CartTable");
+//     var b = document.getElementById("UserTable");
+//     var c = document.getElementById("CCTable");
+//     var d = document.getElementById("BillingTable");
+//     var e = document.getElementById("BillingChart");
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//         a.style.display = "none";
+//         b.style.display = "none";
+//         c.style.display = "none";
+//         d.style.display = "none";
+//         e.style.display = "none";
+//     // } else {
+//     //     x.style.display = "none";
+//     }
+//     }
 
-    function ccTable() {
-    var x = document.getElementById("CCTable");
-    var a = document.getElementById("CartTable");
-    var b = document.getElementById("ProductTable");
-    var c = document.getElementById("UserTable");
-    var d = document.getElementById("BillingTable");
-    var e = document.getElementById("BillingChart");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-        a.style.display = "none";
-        b.style.display = "none";
-        c.style.display = "none";
-        d.style.display = "none";
-        e.style.display = "none";
-    // } else {
-    //     x.style.display = "none";
-    }
-    }
+//     function ccTable() {
+//     var x = document.getElementById("CCTable");
+//     var a = document.getElementById("CartTable");
+//     var b = document.getElementById("ProductTable");
+//     var c = document.getElementById("UserTable");
+//     var d = document.getElementById("BillingTable");
+//     var e = document.getElementById("BillingChart");
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//         a.style.display = "none";
+//         b.style.display = "none";
+//         c.style.display = "none";
+//         d.style.display = "none";
+//         e.style.display = "none";
+//     // } else {
+//     //     x.style.display = "none";
+//     }
+//     }
 
-    function billingTable() {
-    var x = document.getElementById("BillingTable");
-    var a = document.getElementById("CartTable");
-    var b = document.getElementById("ProductTable");
-    var c = document.getElementById("CCTable");
-    var d = document.getElementById("UserTable");
-    var e = document.getElementById("BillingChart");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-        a.style.display = "none";
-        b.style.display = "none";
-        c.style.display = "none";
-        d.style.display = "none";
-        e.style.display = "none";
-    // } else {
-    //     x.style.display = "none";
-    }
-    }    
+//     function billingTable() {
+//     var x = document.getElementById("BillingTable");
+//     var a = document.getElementById("CartTable");
+//     var b = document.getElementById("ProductTable");
+//     var c = document.getElementById("CCTable");
+//     var d = document.getElementById("UserTable");
+//     var e = document.getElementById("BillingChart");
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//         a.style.display = "none";
+//         b.style.display = "none";
+//         c.style.display = "none";
+//         d.style.display = "none";
+//         e.style.display = "none";
+//     // } else {
+//     //     x.style.display = "none";
+//     }
+//     }    
 
-    function billingChart() {
-    var x = document.getElementById("BillingChart");
-    var a = document.getElementById("CartTable");
-    var b = document.getElementById("ProductTable");
-    var c = document.getElementById("CCTable");
-    var d = document.getElementById("UserTable");
-    var e = document.getElementById("BillingTable");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-        a.style.display = "none";
-        b.style.display = "none";
-        c.style.display = "none";
-        d.style.display = "none";
-        e.style.display = "none";
-    // } else {
-    //     x.style.display = "none";
-    }
-    }    
-</script> -->
+//     function billingChart() {
+//     var x = document.getElementById("BillingChart");
+//     var a = document.getElementById("CartTable");
+//     var b = document.getElementById("ProductTable");
+//     var c = document.getElementById("CCTable");
+//     var d = document.getElementById("UserTable");
+//     var e = document.getElementById("BillingTable");
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//         a.style.display = "none";
+//         b.style.display = "none";
+//         c.style.display = "none";
+//         d.style.display = "none";
+//         e.style.display = "none";
+//     // } else {
+//     //     x.style.display = "none";
+//     }
+//     }    
+// </script> -->
 {% endblock %}
