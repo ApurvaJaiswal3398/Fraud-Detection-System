@@ -24,6 +24,7 @@ logged_in = False
 # logged_in_detail = None
 otp = None
 adminpass = None
+data = None
 with open(r'pwd.pwd', 'r') as f:
     adminpass = f.read()
 receiver = None
@@ -221,8 +222,9 @@ def logout():
 @app.route('/dashboard', methods=['GET','POST'])
 def dashboard():
     global loginmsg
-    loginmsg = data = None
+    loginmsg = None
     global alert
+    global data
     df = load_data()
     if request.method == 'POST':
         # if request.form['submit_button'] == 'Submit':
@@ -236,8 +238,21 @@ def dashboard():
         trans_newbalanceDest=request.form.get('trans_newbalanceDest')
         
         # Creting dictionary for extracted data
-        data = {'type': trans_type, 'amount': trans_amt, 'srcacc': trans_nameOrig, 'srcold': trans_oldbalanceOrig, 'srcnew': trans_newbalanceOrig, 'destacc': trans_nameDest, 'destold': trans_oldbalanceDest, 'destnew': trans_newbalanceDest, 'datetime': datetime.now(), 'isFraud': 0}
+        data = {'type': trans_type,
+                'amount': trans_amt,
+                'srcacc': trans_nameOrig,
+                'srcold': trans_oldbalanceOrig,
+                'srcnew': trans_newbalanceOrig,
+                'destacc': trans_nameDest,
+                'destold': trans_oldbalanceDest,
+                'destnew': trans_newbalanceDest,
+                'datetime': datetime.now(),
+                'isFraud': 0
+                }
+        
+        # Checking if all the fields are filled
         if trans_type and trans_amt and trans_nameOrig and trans_oldbalanceOrig and trans_newbalanceOrig and trans_nameDest and trans_oldbalanceDest and trans_newbalanceDest:
+            # Creating DataFrame from the dictionary
             tdata = pd.DataFrame({'step': [1],
                      'type': [trans_type],
                      'amount': [trans_amt],
@@ -249,22 +264,31 @@ def dashboard():
                      'newbalanceDest': [trans_newbalanceDest],
                     })
             print(f'DataFrame => {tdata}')
-            model_path = r'models\v1\ann_fraud_detection.h5'
-            pp_path = r'models\v1\ann_fraud_detection_preprocessor.jb'
-            out = predict(model_path, pp_path, tdata)
-            print(out[0][0] > 0.5)
-            if out[0][0] > 0.5:
+            model_path = r'models\v1\ann_fraud_detection.h5'    # Path to the model
+            pp_path = r'models\v1\ann_fraud_detection_preprocessor.jb'  # Path to the preprocessor
+            out = predict(model_path, pp_path, tdata)   # Calling the predict function
+            print(out[0][0] > 0.5)  # Printing the output
+            if out[0][0] > 0.5:     # Checking if the output is greater than 0.5
                 print('Fraud')
                 data['isFraud'] = 1
                 isFraud = 'Fraud'
-            else:
+            else:                   # If the output is less than 0.5
                 print('Not Fraud')
                 data['isFraud'] = 0
                 isFraud = 'Not Fraud'
-            db = getdb()
-            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest, date_time=datetime.now(), prediction=isFraud))
-            db.commit()
-            db.close()
+            db = getdb()    # Getting the database
+            db.add(Transaction(type=trans_type, 
+                               amount=trans_amt, 
+                               nameOrig=trans_nameOrig, 
+                               oldbalanceOrig=trans_oldbalanceOrig, 
+                               newbalanceOrig=trans_newbalanceOrig, 
+                               nameDest=trans_nameDest, 
+                               oldbalanceDest=trans_oldbalanceDest, 
+                               newbalanceDest=trans_newbalanceDest, 
+                               date_time=datetime.now(), 
+                               prediction=isFraud))
+            db.commit()     # Commiting the changes
+            db.close()      # Closing the database
             print('Data Saved Successfully')
             alert = 'success'
             loginmsg = 'Data Saved Successfully!'

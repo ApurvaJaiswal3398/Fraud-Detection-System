@@ -64,6 +64,10 @@
         border-color: #4CAF50;
         color: white;
     }
+    .vals, .keys{
+        padding: 8px;
+        font-size: medium;
+    }
 </style>
 <!-- Custom styles for this template -->
 <!-- <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet"> -->
@@ -132,14 +136,13 @@
                         </a>
                     </li> -->
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showTable()">
-                            <span data-feather="bar-chart-2"></span>Transaction Details
-                        </a>
+                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showTable()">Transaction Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showForm()">
-                            <span data-feather="bar-chart-2"></span>Transaction Entry
-                        </a>
+                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showForm()">Transaction Entry</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showPrediciton()">Prediction Status</a>
                     </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="/invoice">
@@ -443,12 +446,11 @@
                     </div>
                 </div>
             </div>
-            {% if data %}
-            <div id="pred_display" style="display: flex;">
-                Hey
-                <div class="container" style="display: block;">
+            <div id="pred_display" style="display: none;">
+                {% if data %}
+                <div class="container" style="display: block; height: auto;">
                     <div class="row mt-5">
-                        <div class="col-md-8 p-3" style="background-color: #333; color: beige;">
+                        <!-- <div class="col-md-8 p-3" style="background-color: #333; color: beige;">
                             <form method="POST" enctype="multipart/form-data" class="ml-3">
                                 <h3>Transaction Details</h3><br>
                                 <div class="form-floating mb-2">
@@ -497,17 +499,74 @@
                                 </div>
                             </form>
                         </div>
-                        <!-- { % if data['isFraud'] == 0 % }
+                        { % if data['isFraud'] == 0 % }
                         <div class="col-md-4" style="background-image: url('../../static/images/Safe-Web-File-scaled.jpg'); background-size: contain;"></div>
                         { % else % }
                         <div class="col-md-4" style="background-image: url('../../static/images/stop-fraud.jpg'); background-size: contain;"></div>
                         { % endif % } -->
+                        <div class="col-md-8 p-3 mx-auto">
+                            <div class="row bg-secondary h2 w-100 text-center text-white mx-auto">
+                                <div class="col-12 bg-dark p-2">Transaction Prediction Status</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Transaction Type</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['type'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Transaction Amount</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['amount'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Source Account Number</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['srcacc'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Source Account's Old Balance</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['srcold'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Source Account's New Balance</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['srcnew'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Destination Account Number</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['destacc'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Destination Account's Old Balance</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['destold'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Destination Account's New Balance</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['destnew'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Date and Time</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['datetime'] }}</div>
+                            </div>
+                            <div class="row bg-{% if data['isFraud'] == 0 %}success{% else %}danger{% endif %} h4 p-2 text-white">
+                                <div class="col-6">Prediction Status</div>
+                                <div class="col-6 border-start border-opacity-25 border-secondary">
+                                    {% if data['isFraud'] == 0 %}
+                                    Not Fraud
+                                    {% else %}
+                                    Fraud
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                {% else %}
+                <div class="col-6 mx-auto my-5 p-5 border border-dark bg-light">
+                    <h3 class="text-center">No Details Entered for Prediciton.</h3><br>
+                    <h4 class="text-center">Please Enter Transaction Details.</h4><br><br>
+                    <div class="text-center">
+                        <a id="login_link" class="btn-main btn-info rounded-5 m-1 p-3" onclick="showForm()">Goto Transaction Entry Form</a>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            
-            {% endif %}
         </main>
     </div>
 </div>
@@ -537,9 +596,11 @@
     function showForm() {
         var transform = document.getElementById("transaction_div");
         var transtable = document.getElementById("transtable");
+        var predisplay = document.getElementById("pred_display");
         if (transform.style.display === "none") {
-            transtable.style.display = "none";
             transform.style.display = "block";
+            transtable.style.display = "none";
+            predisplay.style.display = "none";
         } else {
             transform.style.display = "none";
         }
@@ -548,11 +609,26 @@
     function showTable() {
         var transform = document.getElementById("transaction_div");
         var transtable = document.getElementById("transtable");
+        var predisplay = document.getElementById("pred_display");
         if (transtable.style.display === "none") {
-            transform.style.display = "none";
             transtable.style.display = "block";
+            transform.style.display = "none";
+            predisplay.style.display = "none";
         } else {
             transtable.style.display = "none";
+        }
+    }
+    // To display the 'Prediction' of the Transaction
+    function showPrediciton() {
+        var transform = document.getElementById("transaction_div");
+        var transtable = document.getElementById("transtable");
+        var predisplay = document.getElementById("pred_display");
+        if (predisplay.style.display === "none") {
+            predisplay.style.display = "block";
+            transform.style.display = "none";
+            transtable.style.display = "none";
+        } else {
+            predisplay.style.display = "none";
         }
     }
     // To make the dataframe look like one in its respective position (apply the properties of dataframe added 
