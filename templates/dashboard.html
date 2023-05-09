@@ -84,6 +84,7 @@
 {% block spin_dashboard %}<span class="spinner-grow spinner-grow-sm"></span>{% endblock %}
 
 {% block body %}
+{% include "popup2.html" %}
 {% if logged_in %}
 <style>
 .navbar-brand{
@@ -443,7 +444,7 @@
                 </div>
             </div>
             {% if data %}
-            <div id="pred_display" style="display: flex;">
+            <!-- <div id="pred_display" style="display: flex;">
                 Hey
                 <div class="container" style="display: block;">
                     <div class="row mt-5" style="background-color: #333; color: beige;">
@@ -503,7 +504,7 @@
                         {% endif %}
                     </div>
                 </div>
-            </div>
+            </div> -->
             {% else %}
             
             {% endif %}
@@ -719,6 +720,11 @@
     // by jquery cdn, to make it interactive)
     $(function () {
         $('.dataframe').DataTable();  //inspect the element of table to  get the classname
+        {% if data['isFraud'] == 0 %}
+        $('#modalId').modal('show');
+        {% elif data['isFraud'] == 1 %}
+        $('#modalId2').modal('show');
+        {% endif %}
     });
 </script>
 // <!-- <script>

@@ -3,6 +3,7 @@ from database import Transaction
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker,scoped_session
 from datetime import datetime
+from flask_bcrypt import Bcrypt
 # import plotly.express as px
 # from database import Vehicle
 # from sqlalchemy import create_engine
@@ -16,27 +17,29 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+app = Flask(__name__)
 
+# Global Variables
 logged_in = False
-logged_in_detail = None
+# logged_in_detail = None
 otp = None
-adminpass = '12345678'
+adminpass = None
+with open(r'pwd.pwd', 'r') as f:
+    adminpass = f.read()
 receiver = None
 loginmsg = None
 alert = None
 pschanged = False
-admincount = 0
 
+# Function to reset global variables
 def noneall():
     global otp
     global adminpass
     global receiver
     global loginmsg
     global pschanged
-    otp = adminpass = receiver = loginmsg = None
+    otp = receiver = loginmsg = None
     pschanged = False
-
-app = Flask(__name__)
 
 #function to load database table into a pandas dataframe
 def load_data():
@@ -45,6 +48,7 @@ def load_data():
     print(df.head())    # Printing DataFrame
     return df   # Returning DataFrame
 
+# Function to get database session
 def getdb():
     engine = create_engine('sqlite:///project.sqlite')  # Creating Database Engine
     DBSession = sessionmaker(bind=engine)   # Creating Session for Database
@@ -64,19 +68,20 @@ def login():
     global alert
     alert = 'danger'
     global logged_in
-    global logged_in_detail
+    # global logged_in_detail
     global loginmsg
+    global adminpass
     if request.method == "POST":
         login_email = request.form.get('login_email')
         login_password = request.form.get('login_password')
         print("Login Detail : ",login_email, login_password)
-        if login_email == 'admin@fraud.com':
-            if login_password == adminpass:
+        if login_email == 'mihirsuyash7@gmail.com':
+            if adminpass == login_password:
                 print("Admin Login Successful")
                 loginmsg = 'Admin Login Successful!'
                 alert = 'success'
                 logged_in = True
-                logged_in_detail = {'name':'Admin', 'email':'admin@fraud.com', 'password':adminpass, 'admin':'True'}
+                # logged_in_detail = {'name':'Admin', 'email':'jaiswal.apurva.aj011@gmail.com', 'password':adminpass, 'admin':'True'}
                 return redirect('/')
             else:
                 print("Admin Password Not matched")
@@ -92,15 +97,14 @@ def login():
         if pschanged:
             noneall()
     print(f"Logged In : {logged_in}\nOTP : {otp}\nAdmin Pass : {adminpass}\nReceiver : {receiver}\nLogin Msg : {loginmsg}\nPassword Changed : {pschanged}")
-    return render_template('login1.html', title='Login', logged_in=logged_in, user=logged_in_detail, message=message, alert=alert)
+    return render_template('login1.html', title='Login', logged_in=logged_in, message=message, alert=alert)
 
 # Function to generate and send customised email while resetting password
 def send_mail(cpass):
     sender = 'jaiswal.apurva.aj011@gmail.com'
     subject = 'FraudSense Account Password Reset OTP Mail'
     global otp
-    global adminpass
-    adminpass = cpass
+    # companypass = cpass
     otp = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     msg = '''<h4 style='color: #292b2c;'>FraudSense Account</h4>
         <big><h1 style='color: #0275d8;'>Password reset code</h1></big>
@@ -147,12 +151,12 @@ def forgotpassword():
         receiver = request.form.get('receiver')
         # admin_pass = request.form.get('admin_pass')
         with open('E:\Fraud Detection Documents\EMAIL_PASS.pwd', 'r') as f:
-            admin_pass = f.read()
-        print("Mail Receiver : ",receiver," Company Password : ", admin_pass)
+            comp_pass = f.read()
+        print("Mail Receiver : ",receiver," Company Password : ", comp_pass)
         # x = Users.find_one({'email': receiver})
         # print('Receiver Data : ',receiver)
         # if x:
-        if send_mail(admin_pass):
+        if send_mail(comp_pass):
             print(f'Mail Sent to Receiver {receiver} with OTP : {otp}')
             return redirect('/OTPVerification')
         else:
@@ -172,6 +176,31 @@ def otpverification():
         else:
             print('Wrong OTP Entered!')
     return render_template('otpverification.html', title='OTP Verification', otp=otp)
+
+@app.route('/ChangePassword', methods=['GET','POST'])
+def changepassword():
+    global loginmsg
+    global adminpass
+    if request.method == "POST":
+        np = request.form.get('newpass')
+        cp = request.form.get('confpass')
+        print('New Password : ',np)
+        print('Confirm Password : ',cp)
+        if np == cp:
+            print('New Pasword Matched!')
+            print('Receiver Data whose Password is to be changed : ',receiver)
+            with open(r'pwd.pwd', 'w') as f:
+                f.write(np)
+                adminpass = np
+            print(f'Password Changed Successfully! for user {receiver}\n')
+            # send_confirmation()
+            global pschanged
+            pschanged = True
+            loginmsg = 'Password Changed Successfully. You can login to your account now.'
+            return redirect('/login')
+        else:
+            print('New Password did not match! Re-Enter Passwords.')
+    return render_template('changepassword.html', title='Change Password')
 
 @app.route('/logout')
 def logout():

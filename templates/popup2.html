@@ -1,0 +1,153 @@
+<style>
+.page{
+    width:100%;
+    height: 100vh;
+    background:#3c5077;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.popup{
+    width: 25%;
+    height: 40%;
+    background: #fff;
+    border-radius: 6px;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform:translate(-50%,-50%) scale(0.1);
+    text-align: center ;
+    padding: 0 30px 30px;
+    color: #333;
+    visibility: hidden;
+    transition: transform 1s, top 1s;
+}
+
+.open-popup{
+    visibility: visible;
+    top: 50%;
+    transform:translate(-50%,-50%) scale(1);    
+}
+
+.modal-header img{
+    width: 20%;
+    /* margin-top: -50px; */
+    margin: 0 auto;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.popup h1{
+    font-size: 250%;
+    font-weight: 800;
+    margin: 30px 0 10px;
+}
+
+.popup h2{
+    font-size: 150%;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.popup h3{
+    font-size: 120%;
+    font-weight: 500;
+    margin: 10px 0;
+}
+
+.modal-footer button{
+    width: 40%;
+    margin-top: 20px;
+    padding: 10px 0;
+    background: #6fd649;
+    color: #fff;
+    border: 0;
+    outline: none;
+    font-size: 18px;    
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+#popupfraud button{
+    background-color: rgb(219,5,41);
+}
+</style>
+<!-- Modal trigger button -->
+<!-- Modal Body -->
+<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+<!-- <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <h5 class="modal-title" id="modalTitleId">DETECTED SAFE</h5> - ->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <img src="./../static/images/shield.png" alt="safe">
+            </div>
+            <div class="modal-body">
+                <div class="" id="popupsafe">
+                    <img src="./../static/images/shield.png" alt="safe">
+                    <div> Safe Transaction</div>
+                    <div> The Entered Transaction is Safe</div>
+                    <div>Click OK To Proceed!!</div>
+                    <!-- <button type="button" onclick="closePopup()">OK</button> - ->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                <!-- <button type="button" class="btn btn-primary">Save</button> - ->
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="w-100 text-center">
+                    <img src="./../static/images/shield.png" alt="safe">
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mx-auto w-100 text-center">
+                    <div class="h2">Safe Transaction  </div>
+                    <div class="h4">The Transaction is Safe</div>
+                    <div class="h6">Click OK To Proceed!!</div>
+                </div>
+            </div>  
+            <div class="modal-footer text-center w-100 bg-primary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalId2" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="w-100 text-center">
+                    <img src="./../static/images/warning.png" alt="fraud">
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mx-auto w-100 text-center">
+                    <div class="h2">Fraud Transaction  </div>
+                    <div class="h4">The Transaction is Fraudulent</div>
+                    <div class="h6">Click OK To Proceed!!</div>
+                </div>
+            </div>  
+            <div class="modal-footer w-100" id="popupfraud">
+                <button type="button" class="btn btn-secondary mx-auto px-3" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Place to the bottom of scripts -->
+<script>
+    const myModal = new bootstrap.Modal(document.getElementById('modalId'), options)
+</script>
