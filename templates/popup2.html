@@ -117,7 +117,7 @@
                 </div>
             </div>  
             <div class="modal-footer w-100" id="popupfraud">
-                <button type="button" class="btn btn-secondary mx-auto px-3" data-bs-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-secondary mx-auto px-3" data-bs-dismiss="modal" onclick="showPredRes()">OK</button>
             </div>
         </div>
     </div>
@@ -125,5 +125,10 @@
 
 <!-- Optional: Place to the bottom of scripts -->
 <script>
-    const myModal = new bootstrap.Modal(document.getElementById('modalId'), options)
+    const myModal = new bootstrap.Modal(document.getElementById('modalId'), options);
+    
+    // Function to display the Prediction Result
+    function showPredRes() {
+        document.getElementById("pred_display").style.display = "block";
+    }
 </script>

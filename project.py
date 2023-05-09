@@ -76,7 +76,7 @@ def login():
         login_email = request.form.get('login_email')
         login_password = request.form.get('login_password')
         print("Login Detail : ",login_email, login_password)
-        if login_email == 'mihirsuyash7@gmail.com':
+        if login_email == 'jaiswal.apurva.aj011@gmail.com':
             if adminpass == login_password:
                 print("Admin Login Successful")
                 loginmsg = 'Admin Login Successful!'
@@ -141,6 +141,66 @@ def send_mail(cpass):
         print('Sending Process Ended')
         return success
 
+def send_confirmation(cpass):
+    sender = 'jaiswal.apurva.aj011@gmail.com'
+    subject = 'FraudSense Account Password Change'
+    msg = '''<h4 style='color: #444444;'>FraudSense Account</h4>
+    <big><h1 style='color: blue;'>Your Password Changed</h1></big>
+    <p>Your password for the Microsoft account '''+receiver+''' was changed on '''+datetime.now().strftime('%Y/%m/%d %H:%M:%S')+'''.</p>
+    <p>Thanks,\nThe FraudSense Team.</p>'''
+    success = False
+    m = MIMEMultipart('alternative')
+    m['From'] = sender
+    m['Bcc'] = receiver
+    m['Subject'] = subject
+    m.attach(MIMEText(msg,'html'))
+    print(f'sender : {sender}\nReceiver : {receiver}\nAdmin Password : {adminpass}\nMessage : {msg}\nSuccess : {success}\nMIME Content : {m}')
+
+    con = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    print('Connected to SMTP Server via SSL')
+    # con.starttls()
+    # print('TLS Encryption Enabled')
+    if cpass:
+        print('Admn Password : ',cpass,' is OK')
+        try:
+            print('Logging In!')
+            con.login(sender, cpass)
+            print('Logged In by Comapny Email')
+            msg_content = m.as_string()
+            print('Message Created for the Mail to be Sent : \n',msg_content)
+            # con.sendmail(sender, receiver, 'Subject: So long.\nDear Alice, so long and thanks for all the fish. Sincerely, Bob')
+            con.sendmail(sender, receiver, msg_content)
+            print('Mail Sent')
+            success = True
+        except smtplib.SMTPAuthenticationError:
+            print('Wrong Company Password Entered!')
+            # otp = None
+            success = False
+        except smtplib.SMTPAuthenticationError:
+            print('The server didn\'t accept the username/password combination.')
+        except smtplib.SMTPNotSupportedError:
+            print('The AUTH command is not supported by the server.')
+        except smtplib.SMTPException:
+            print('No suitable authentication method was found.')
+        except smtplib.SMTPHeloError:
+            print('The server didn\'t reply properly to the helo greeting.')
+        except smtplib.SMTPRecipientsRefused:
+            print('The server rejected ALL recipients (no mail was sent).')
+        except smtplib.SMTPSenderRefused:
+            print('The server didn\'t accept the from_addr.')
+        except smtplib.SMTPDataError:
+            print('The server replied with an unexpected error code (other than a refusal of a recipient).')
+        except smtplib.SMTPNotSupportedError:
+            print('The mail_options parameter includes \'SMTPUTF8\' but the SMTPUTF8 extension is not supported by the server.')
+        finally:
+            con.quit()
+            print('Logged out of the Company Mail')
+            print('Sending Process Ended')
+            return success
+    else:
+        print('No Admin Password Given')
+        return False
+
 @app.route('/forgotpassword', methods=['GET','POST'])
 def forgotpassword():
     message=None
@@ -187,8 +247,11 @@ def changepassword():
             with open(r'pwd.pwd', 'w') as f:
                 f.write(np)
                 adminpass = np
+            with open('E:\Fraud Detection Documents\EMAIL_PASS.pwd', 'r') as f:
+                comp_pass = f.read()
             print(f'Password Changed Successfully! for user {receiver}\n')
-            # send_confirmation()
+            if send_confirmation(comp_pass):
+                print('Confirmation Mail Sent to User!')
             global pschanged
             pschanged = True
             loginmsg = 'Password Changed Successfully. You can login to your account now.'
