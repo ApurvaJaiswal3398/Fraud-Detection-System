@@ -25,4 +25,3 @@ class Transaction(Base):
 
 engine=create_engine('sqlite:///project.sqlite')
 Base.metadata.create_all(engine)
-

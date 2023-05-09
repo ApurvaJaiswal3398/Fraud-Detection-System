@@ -121,8 +121,6 @@ def send_mail(cpass):
     # con = smtplib.SMTP('smtp.gmail.com', 587)
     con = smtplib.SMTP_SSL('smtp.gmail.com', 465)
     print('Connected to SMTP Server')
-    # con.starttls()
-    # print('TLS Encryption Enabled')
     try:
         con.login(sender, cpass)
         print('Logged In by Company Email')
@@ -149,20 +147,16 @@ def forgotpassword():
     global receiver
     if request.method == "POST":
         receiver = request.form.get('receiver')
-        # admin_pass = request.form.get('admin_pass')
         with open('E:\Fraud Detection Documents\EMAIL_PASS.pwd', 'r') as f:
             comp_pass = f.read()
         print("Mail Receiver : ",receiver," Company Password : ", comp_pass)
-        # x = Users.find_one({'email': receiver})
-        # print('Receiver Data : ',receiver)
-        # if x:
+        
         if send_mail(comp_pass):
             print(f'Mail Sent to Receiver {receiver} with OTP : {otp}')
             return redirect('/OTPVerification')
         else:
             message = 'Sender\'s Password is Wrong!'
-        # else:
-        #     message = 'No User for given Email Found!'
+
     print(f"Logged In : {logged_in}")
     return render_template('forgotpassword.html', title='Forgot Password', message=message)
 
