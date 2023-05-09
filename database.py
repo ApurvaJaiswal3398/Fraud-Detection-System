@@ -18,7 +18,7 @@ class Transaction(Base):
     oldbalanceDest=Column(Float, nullable=True) # Creating Column for Old Balance of Receiver's Account
     newbalanceDest=Column(Float, nullable=True) # Creating Column for New Balance of Receiver's Account
     date_time=Column(DateTime, nullable=True)   # Creating Column for Date of Transaction
-    is_Fraud=Column(Integer, nullable=True)     # Creating Column for Fraudulent Transaction Prediction
+    prediction=Column(String(15), nullable=True)    # Creating Column for Fraudulent Transaction Prediction
 
     def __str__(self):
         return self.type

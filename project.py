@@ -253,8 +253,6 @@ def dashboard():
                      'name_dest': [trans_nameDest],
                      'oldbalanceDest': [trans_oldbalanceDest],
                      'newbalanceDest': [trans_newbalanceDest],
-                     'datetime': datetime.now(),
-                     'is_Fraud': 0
                     })
             print(f'DataFrame => {tdata}')
             model_path = r'models\v1\ann_fraud_detection.h5'
@@ -263,12 +261,14 @@ def dashboard():
             print(out[0][0] > 0.5)
             if out[0][0] > 0.5:
                 print('Fraud')
-                data['isFraud'] = isFraud = 1
+                data['isFraud'] = 1
+                isFraud = 'Fraud'
             else:
                 print('Not Fraud')
-                data['isFraud'] = isFraud = 0
+                data['isFraud'] = 0
+                isFraud = 'Not Fraud'
             db = getdb()
-            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest, date_time=datetime.now(), is_Fraud=isFraud))
+            db.add(Transaction(type=trans_type, amount=trans_amt, nameOrig=trans_nameOrig, oldbalanceOrig=trans_oldbalanceOrig, newbalanceOrig=trans_newbalanceOrig, nameDest=trans_nameDest, oldbalanceDest=trans_oldbalanceDest, newbalanceDest=trans_newbalanceDest, date_time=datetime.now(), prediction=isFraud))
             db.commit()
             db.close()
             print('Data Saved Successfully')
