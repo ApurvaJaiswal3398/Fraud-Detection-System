@@ -437,7 +437,7 @@
                 <div class="container bg-light" style="height: auto; width: auto; overflow-x: scroll;">
                     <div class="row" style="width: 100%; margin-top: 0;">
                         <div class="col-md-12">
-                            {{result|safe}}
+                            {{df|safe}}
                         </div>
                     </div>
                 </div>
@@ -567,38 +567,90 @@
                 </div>
                 {% endif %}
             </div>
-            <div id="report">
+            <div id="report" style="display: {% if osr %}block{% else %}none{% endif %};">
                 <div class="container bg-light" style="height: auto; width: auto; overflow-x: scroll;">
                     <div class="row" style="width: 100%; margin-top: 0;">
                         <div class="col-md-12">
-                            <form method="post">
+                            <form class="row" method="post">
                                 <h2 class="my-3">Search</h2>
-                                <div class="form-floating mb-3">
-                                    <select class="form-select" id="search_criteria" name="search_criteria" aria-label="Search Criteria" required>
-                                        <option value="Transaction_Type" selected>Transaction Type</option>
+                                <div class="form-floating mb-3 col-3" id="srchcrt">
+                                    <select class="form-select" id="searchSelect" name="searchSelect" onchange="showSearchOptions()" aria-label="SearchCriteria">
+                                        <option value="None" selected disabled hidden>Select an Option</option>
                                         <option value="Date">Date</option>
+                                        <option value="Transaction_Type">Transaction Type</option>
                                         <option value="Prediction">Prediction Result</option>
-                                        <!-- <option value="TRANSFER">TRANSFER</option>  
-                                        <option value="CASH_IN">CASH_IN</option> -->
                                     </select>
-                                    <label class="phtext" for="floatingSelect">Criteria for Search</label>
+                                    <label class="phtext px-4" for="searchSelect">Criteria for Search</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="date" class="form-control" name="sdate" id="sdate" placeholder="Starting Date">
-                                    <label for="sdate">From Date</label>
+                                <!-- <div class="form-floating mb-3 col-3" id="dtsrch" style="display: none;">
+                                    <select class="form-select" id="dateSelect" name="dateSelect" onchange="showDateOptions()" aria-label="DateCriteria">
+                                        <option value="None" selected disabled hidden>Select an Option</option>
+                                        <option value="Year">Year</option>
+                                        <option value="Month">Month</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Period">Period</option>
+                                    </select>
+                                    <label class="phtext px-4" for="dateSelect">Date Criteria</label>
+                                </div> -->
+                                <div class="form-floating mb-3 col-3" id="typsrch" style="display: none;">
+                                    <select class="form-select" id="typeSelect" name="typeSelect" aria-label="TypeCriteria" onchange="showTypeOptions()">
+                                        <option value="None" selected disabled hidden>Select an Option</option>
+                                        <option value="TRANSFER">Transfer</option>
+                                        <option value="CASH_IN">Cash In</option>
+                                        <option value="CASH_OUT">Cash Out</option>
+                                        <option value="PAYMENT">Payment</option>
+                                        <option value="DEBIT">Debit</option>
+                                    </select>
+                                    <label class="phtext px-4" for="typeSelect">Type Criteria</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="date" class="form-control" name="edate" id="edate" placeholder="Ending Date">
-                                    <label for="edate">To Date</label>
+                                <div class="form-floating mb-3 col-3" id="prdsrch" style="display: none;">
+                                    <select class="form-select" id="predSelect" name="predSelect" aria-label="TypeCriteria" onchange="showPredOptions()">
+                                        <option value="None" selected disabled hidden>Select an Option</option>
+                                        <option value="Not Fraud">Safe</option>
+                                        <option value="Fraud">Fraud</option>
+                                    </select>
+                                    <label class="phtext px-4" for="predSelect">Prediction Criteria</label>
                                 </div>
-                                <div class="d-grid gap-2 mb-3">
+                                <!-- <div class="form-floating mb-3 col-3" id="yrsrch" style=";">
+                                    <select class="form-select" id="yearSelect" name="yearSelect" aria-label="TypeCriteria">
+                                        <option value="01" selected>January</option>
+                                        <option value="02">February</option>
+                                        <option value="03">March</option>
+                                        <option value="04">April</option>
+                                        <option value="05">May</option>
+                                        <option value="06">June</option>
+                                        <option value="07">July</option>
+                                        <option value="08">August</option>
+                                        <option value="09">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                    <label class="phtext px-4" for="yearSelect">Prediction Criteria</label>
+                                </div> -->
+                                <div class="form-floating mb-3 col-3" id="sd" style="display: none;">
+                                    <input type="date" class="form-control" name="sdate" id="sdate" placeholder="Starting Date" onchange="sdchange()">
+                                    <label for="sdate" class="px-4">From Date</label>
+                                </div>
+                                <div class="form-floating mb-3 col-3" id="ed" style="display: none;">
+                                    <input type="date" class="form-control" name="edate" id="edate" placeholder="Ending Date" onchange="edchange()">
+                                    <label for="edate" class="px-4">To Date</label>
+                                </div>
+                                <div class="d-grid gap-2 mb-3 col-2">
                                     <button class="btn btn-success">Update Result</button>
                                 </div>
                             </form>
                         </div>
+                        <div id="testsel"></div>
                         <div class="col-md-12">
                             {{result|safe}}
                         </div>
+                        <!-- { % if fig % } -->
+                        <div class="col">
+                            <!-- { { fig|safe } } -->
+                            <img src="../static/images/output.png">
+                        </div>
+                        <!-- { % endif % } -->
                     </div>
                 </div>
             </div>
@@ -638,6 +690,7 @@
             transform.style.display = "block";
             transtable.style.display = "none";
             predisplay.style.display = "none";
+            report.style.display = "none";
         } else {
             transform.style.display = "none";
         }
@@ -651,6 +704,7 @@
             transtable.style.display = "block";
             transform.style.display = "none";
             predisplay.style.display = "none";
+            report.style.display = "none";
         } else {
             transtable.style.display = "none";
         }
@@ -660,18 +714,36 @@
         var transform = document.getElementById("transaction_div");
         var transtable = document.getElementById("transtable");
         var predisplay = document.getElementById("pred_display");
+        var report = document.getElementById("report");
         if (predisplay.style.display === "none") {
             predisplay.style.display = "block";
             transform.style.display = "none";
             transtable.style.display = "none";
+            report.style.display = "none";
         } else {
             predisplay.style.display = "none";
+        }
+    }
+    // To display the Reports
+    function showReport() {
+        var transform = document.getElementById("transaction_div");
+        var transtable = document.getElementById("transtable");
+        var predisplay = document.getElementById("pred_display");
+        var report = document.getElementById("report");
+        if (report.style.display === "none") {
+            report.style.display = "block";
+            transform.style.display = "none";
+            transtable.style.display = "none";
+            predisplay.style.display = "none";
+        } else {
+            report.style.display = "none";
         }
     }
     // To make the dataframe look like one in its respective position (apply the properties of dataframe added 
     // by jquery cdn, to make it interactive)
     $(function () {
         $('.dataframe').DataTable();  //inspect the element of table to  get the classname
+        $('#DataTables_Table_0_filter').style.display = "none";
         {% if flag==1 %}
             {% if data['isFraud'] == 0 %}
             $('#modalId').modal('show');
@@ -680,5 +752,109 @@
             {% endif %}
         {% endif %}
     });
+
+    // To display Search Criteria Options
+    function showSearchOptions(){
+        var sr = document.getElementById("searchSelect").value;
+    //     var dt = document.getElementById("dtsrch");
+        var ty = document.getElementById("typsrch");
+        var pr = document.getElementById("prdsrch");
+        var sd = document.getElementById("sd");
+        var ed = document.getElementById("ed");
+        document.getElementById("testsel").innerHTML = "You selected: " + sr;
+        if(sr == "Transaction_Type")
+        {
+            ty.style.display = "block";
+    //         dt.style.display = "none";
+            pr.style.display = "none";
+            ed.style.display = "none";
+            sd.style.display = "none";
+        }
+        else if(sr == "Date")
+        {
+    //         dt.style.display = "none";
+            ty.style.display = "none";
+            pr.style.display = "none";
+            ed.style.display = "block";
+            sd.style.display = "block";
+        }
+        else if(sr == "Prediction")
+        {
+            pr.style.display = "block";
+            ty.style.display = "none";
+    //         dt.style.display = "none";
+            ed.style.display = "none";
+            sd.style.display = "none";
+        }
+    }
+
+    // function showDateOptions(){
+    //     var dt = document.getElementById("dateSelect").value;
+    //     var yr = document.getElementById("yrsrch");
+    //     var mn = document.getElementById("mntsrch");
+    //     var sd = document.getElementById("sd");
+    //     var ed = document.getElementById("ed");
+    //     document.getElementById("testsel").innerHTML = "You selected: " + dt;
+    //     if(sr == "Year")
+    //     {
+    //         yr.style.display = "block";
+    //         mn.style.display = "none";
+    //         ed.style.display = "none";
+    //         sd.style.display = "none";
+    //     }
+    //     else if(sr == "Month")
+    //     {
+    //         mn.style.display = "block";
+    //         yr.style.display = "none";
+    //         ed.style.display = "none";
+    //         sd.style.display = "none";
+    //     }
+    //     else if(sr == "Date")
+    //     {
+    //         sd.style.display = "block";
+    //         yr.style.display = "none";
+    //         mn.style.display = "none";
+    //         ed.style.display = "none";
+    //     }
+    //     else if(sr == "Period")
+    //     {
+    //         sd.style.display = "block";
+    //         ed.style.display = "block";
+    //         yr.style.display = "none";
+    //         mn.style.display = "none";
+    //     }
+    // }
+
+    function showTypeOptions()
+    {
+        var ty = document.getElementById("typeSelect").value;
+        test = document.getElementById("testsel");
+        test.innerHTML = "You selected: " + ty;
+    }
+
+    function sdchange()
+    {
+        var sd = document.getElementById("sdate").value;
+        var ed = document.getElementById("edate");
+        var test = document.getElementById("testsel");
+        test.innerHTML = "You selected: " + sd;
+        ed.min = sd;
+    }
+
+    function edchange()
+    {
+        var ed = document.getElementById("edate").value;
+        var sd = document.getElementById("sdate");
+        var test = document.getElementById("testsel");
+        test.innerHTML = "You selected: " + ed;
+        sd.max = ed;
+    }
+
+    function showPredOptions()
+    {
+        var pr = document.getElementById("predSelect").value;
+        var test = document.getElementById("testsel");
+        test.innerHTML = "You selected: " + pr;
+    }
 </script>
 {% endblock %}

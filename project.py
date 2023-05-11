@@ -4,10 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker,scoped_session
 from datetime import datetime
 from flask_bcrypt import Bcrypt
-# import plotly.express as px
-# from database import Vehicle
-# from sqlalchemy import create_engine
-# from sqlalchemy.orm import sessionmaker, scoped_session
+import plotly.express as px
+import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 # from werkzeug.utils import secure_filename
 from fraud_detection import predict
 import pandas as pd
@@ -289,9 +288,12 @@ def dashboard():
     global alert
     global data
     flag = 0
-    df = load_data()
+    opensearch = False
+    result = df = load_data()
+    fig = None
     if request.method == 'POST':
         # if request.form['submit_button'] == 'Submit':
+        # Get dtaa from Transaction Entry Form
         trans_type=request.form.get('trans_type') 
         trans_amt=request.form.get('trans_amt')
         trans_nameOrig=request.form.get('trans_nameOrig')
@@ -300,74 +302,124 @@ def dashboard():
         trans_nameDest=request.form.get('trans_nameDest')
         trans_oldbalanceDest=request.form.get('trans_oldbalanceDest')
         trans_newbalanceDest=request.form.get('trans_newbalanceDest')
+
+        # Get Data From Reports Section
+        searchSelect = request.form.get('searchSelect')
+        typeSelect = request.form.get('typeSelect')
+        predSelect = request.form.get('predSelect')
+        sdate = request.form.get('sdate')
+        edate = request.form.get('edate')
+        print(f"Search Option Selected : {searchSelect}\nType Option Selected : {typeSelect}\nPrediction Option Selected : {predSelect}\nStart Date : {sdate}\nEnd Date : {edate}")
         
-        # Creting dictionary for extracted data
-        data = {'type': trans_type,
-                'amount': trans_amt,
-                'srcacc': trans_nameOrig,
-                'srcold': trans_oldbalanceOrig,
-                'srcnew': trans_newbalanceOrig,
-                'destacc': trans_nameDest,
-                'destold': trans_oldbalanceDest,
-                'destnew': trans_newbalanceDest,
-                'date': datetime.strftime(datetime.now(), '%d-%m-%Y'),
-                'time': datetime.strftime(datetime.now(), '%H:%M:%S'),
-                'isFraud': 0
-                }
+
+        if searchSelect != None and searchSelect != '':
+            opensearch = True
+            if searchSelect == 'Transaction_Type':
+                if typeSelect != None and typeSelect != '':
+                    result = df.query("Transaction_Type == @typeSelect")
+                else:
+                    result = df
+                    # # Filter DataFrame based on specified transaction types
+                    # specified_transaction_types = ['PAYMENT', 'CASH_IN', 'CASH_OUT', 'DEBIT', 'TRANSFER']
+                    # filtered_df = df[df['Transaction_Type'].isin(specified_transaction_types)]
+
+                    # # Calculate the transaction type counts
+                    # transaction_type_counts = filtered_df['Transaction_Type'].value_counts()
+
+                    # # Plotting the pie chart
+                    # plt.pie(transaction_type_counts, labels=transaction_type_counts.index, autopct='%1.1f%%', startangle=90)
+                    # plt.title('Transaction Type Distribution')
+                    # plt.axis('equal')
+
+                    # # Display the chart
+                    # plt.show()
+            elif searchSelect == 'Prediction':
+                if predSelect != None and predSelect != '':
+                    result = df.query("Prediction == @predSelect")
+                else:
+                    result = df
+            elif searchSelect == 'Date':
+                if sdate != None and sdate != '' and edate != None and edate != '':
+                    sdate = datetime.strptime(sdate, "%Y-%m-%d").date().strftime("%d-%m-%Y")
+                    edate = datetime.strptime(edate, "%Y-%m-%d").date().strftime("%d-%m-%Y")
+                    print(f"New Start Date : {sdate}\nNew End Date : {edate}")
+                    result = df.query("@sdate <= Date <= @edate")
+                else:
+                    result = df
+            else:
+                result = df
+        elif trans_type!=None and trans_type!='':
+            # Creting dictionary for extracted data
+            data = {'type': trans_type,
+                    'amount': trans_amt,
+                    'srcacc': trans_nameOrig,
+                    'srcold': trans_oldbalanceOrig,
+                    'srcnew': trans_newbalanceOrig,
+                    'destacc': trans_nameDest,
+                    'destold': trans_oldbalanceDest,
+                    'destnew': trans_newbalanceDest,
+                    'date': datetime.strftime(datetime.now(), '%d-%m-%Y'),
+                    'time': datetime.strftime(datetime.now(), '%H:%M:%S'),
+                    'isFraud': 0
+                    }
         
-        # Checking if all the fields are filled
-        if trans_type and trans_amt and trans_nameOrig and trans_oldbalanceOrig and trans_newbalanceOrig and trans_nameDest and trans_oldbalanceDest and trans_newbalanceDest:
-            # Creating DataFrame from the dictionary
-            tdata = pd.DataFrame({'step': [1],
-                     'type': [trans_type],
-                     'amount': [trans_amt],
-                     'name_orig': [trans_nameOrig],
-                     'oldbalanceOrg': [trans_oldbalanceOrig],
-                     'newbalanceOrig': [trans_newbalanceOrig],
-                     'name_dest': [trans_nameDest],
-                     'oldbalanceDest': [trans_oldbalanceDest],
-                     'newbalanceDest': [trans_newbalanceDest],
-                    })
-            print(f'DataFrame => {tdata}')
-            model_path = r'models\v1\ann_fraud_detection.h5'    # Path to the model
-            pp_path = r'models\v1\ann_fraud_detection_preprocessor.jb'  # Path to the preprocessor
-            out = predict(model_path, pp_path, tdata)   # Calling the predict function
-            print(out[0][0] > 0.5)  # Printing the output
-            if out[0][0] > 0.5:     # Checking if the output is greater than 0.5
-                print('Fraud')
-                data['isFraud'] = 1
-                isFraud = 'Fraud'
-            else:                   # If the output is less than 0.5
-                print('Not Fraud')
-                data['isFraud'] = 0
-                isFraud = 'Not Fraud'
-            flag = 1
-            db = getdb()    # Getting the database
-            db.add(Transaction(Transaction_Type=trans_type, 
-                               Transaction_Amount=trans_amt, 
-                               Source_Account=trans_nameOrig, 
-                               SA_Old_Balance=trans_oldbalanceOrig, 
-                               SA_New_Balance=trans_newbalanceOrig, 
-                               Destination_Account=trans_nameDest, 
-                               DA_Old_Balance=trans_oldbalanceDest, 
-                               DA_New_Balance=trans_newbalanceDest, 
-                               Date=datetime.strftime(datetime.now(), '%d-%m-%Y'),
-                               Time=datetime.strftime(datetime.now(), '%H:%M:%S'),
-                               Prediction=isFraud))
-            db.commit()     # Commiting the changes
-            db.close()      # Closing the database
-            print('Data Saved Successfully')
-            alert = 'success'
-            loginmsg = 'Data Saved Successfully!'
-            # return redirect('/dashboard')
-        else:
-            print('Data Not Saved')
-            alert = 'danger'
-            loginmsg = 'Data Not Saved!'
-            # return redirect('/dashboard')
+            # Checking if all the fields are filled
+            if trans_type and trans_amt and trans_nameOrig and trans_oldbalanceOrig and trans_newbalanceOrig and trans_nameDest and trans_oldbalanceDest and trans_newbalanceDest:
+                # Creating DataFrame from the dictionary
+                tdata = pd.DataFrame({'step': [1],
+                        'type': [trans_type],
+                        'amount': [trans_amt],
+                        'name_orig': [trans_nameOrig],
+                        'oldbalanceOrg': [trans_oldbalanceOrig],
+                        'newbalanceOrig': [trans_newbalanceOrig],
+                        'name_dest': [trans_nameDest],
+                        'oldbalanceDest': [trans_oldbalanceDest],
+                        'newbalanceDest': [trans_newbalanceDest],
+                        })
+                print(f'DataFrame => {tdata}')
+                model_path = r'models\v1\ann_fraud_detection.h5'    # Path to the model
+                pp_path = r'models\v1\ann_fraud_detection_preprocessor.jb'  # Path to the preprocessor
+                out = predict(model_path, pp_path, tdata)   # Calling the predict function
+                print(out[0][0] > 0.5)  # Printing the output
+                if out[0][0] > 0.5:     # Checking if the output is greater than 0.5
+                    print('Fraud')
+                    data['isFraud'] = 1
+                    isFraud = 'Fraud'
+                else:                   # If the output is less than 0.5
+                    print('Not Fraud')
+                    data['isFraud'] = 0
+                    isFraud = 'Not Fraud'
+                flag = 1
+                db = getdb()    # Getting the database
+                db.add(Transaction(Transaction_Type=trans_type, 
+                                Transaction_Amount=trans_amt, 
+                                Source_Account=trans_nameOrig, 
+                                SA_Old_Balance=trans_oldbalanceOrig, 
+                                SA_New_Balance=trans_newbalanceOrig, 
+                                Destination_Account=trans_nameDest, 
+                                DA_Old_Balance=trans_oldbalanceDest, 
+                                DA_New_Balance=trans_newbalanceDest, 
+                                Date=datetime.strftime(datetime.now(), '%d-%m-%Y'),
+                                Time=datetime.strftime(datetime.now(), '%H:%M:%S'),
+                                Prediction=isFraud))
+                db.commit()     # Commiting the changes
+                db.close()      # Closing the database
+                print('Data Saved Successfully')
+                alert = 'success'
+                loginmsg = 'Data Saved Successfully!'
+                # return redirect('/dashboard')
+            else:
+                print('Data Not Saved')
+                alert = 'danger'
+                loginmsg = 'Data Not Saved!'
+                # return redirect('/dashboard')
+
+        print('The Dataset for Search is :')
+        print(result)
+
     print(f"Logged In : {logged_in}")
     print(f"Data : {data}")
-    return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert, result = df.to_html(), data=data, flag=flag)
+    return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert, df = df.to_html(), data=data, flag=flag, result=result.to_html(), fig=fig, osr = opensearch)
 
 @app.route('/homepage')
 def homepage():
