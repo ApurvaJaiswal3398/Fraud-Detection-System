@@ -41,6 +41,10 @@ body {
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 
+.nav-item:hover{
+    cursor: pointer;
+}
+
 .btn-outline-info:hover{
     background-color: transparent;
 }

@@ -288,6 +288,7 @@ def dashboard():
     loginmsg = None
     global alert
     global data
+    flag = 0
     df = load_data()
     if request.method == 'POST':
         # if request.form['submit_button'] == 'Submit':
@@ -309,7 +310,8 @@ def dashboard():
                 'destacc': trans_nameDest,
                 'destold': trans_oldbalanceDest,
                 'destnew': trans_newbalanceDest,
-                'datetime': datetime.now(),
+                'date': datetime.strftime(datetime.now(), '%d-%m-%Y'),
+                'time': datetime.strftime(datetime.now(), '%H:%M:%S'),
                 'isFraud': 0
                 }
         
@@ -339,17 +341,19 @@ def dashboard():
                 print('Not Fraud')
                 data['isFraud'] = 0
                 isFraud = 'Not Fraud'
+            flag = 1
             db = getdb()    # Getting the database
-            db.add(Transaction(type=trans_type, 
-                               amount=trans_amt, 
-                               nameOrig=trans_nameOrig, 
-                               oldbalanceOrig=trans_oldbalanceOrig, 
-                               newbalanceOrig=trans_newbalanceOrig, 
-                               nameDest=trans_nameDest, 
-                               oldbalanceDest=trans_oldbalanceDest, 
-                               newbalanceDest=trans_newbalanceDest, 
-                               date_time=datetime.now(), 
-                               prediction=isFraud))
+            db.add(Transaction(Transaction_Type=trans_type, 
+                               Transaction_Amount=trans_amt, 
+                               Source_Account=trans_nameOrig, 
+                               SA_Old_Balance=trans_oldbalanceOrig, 
+                               SA_New_Balance=trans_newbalanceOrig, 
+                               Destination_Account=trans_nameDest, 
+                               DA_Old_Balance=trans_oldbalanceDest, 
+                               DA_New_Balance=trans_newbalanceDest, 
+                               Date=datetime.strftime(datetime.now(), '%d-%m-%Y'),
+                               Time=datetime.strftime(datetime.now(), '%H:%M:%S'),
+                               Prediction=isFraud))
             db.commit()     # Commiting the changes
             db.close()      # Closing the database
             print('Data Saved Successfully')
@@ -363,7 +367,7 @@ def dashboard():
             # return redirect('/dashboard')
     print(f"Logged In : {logged_in}")
     print(f"Data : {data}")
-    return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert, result = df.to_html(), data=data)
+    return render_template('dashboard.html', title='Dashboard', logged_in=logged_in, message = loginmsg, alert=alert, result = df.to_html(), data=data, flag=flag)
 
 @app.route('/homepage')
 def homepage():

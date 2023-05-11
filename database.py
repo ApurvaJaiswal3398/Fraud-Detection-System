@@ -8,17 +8,18 @@ Base=declarative_base()
 
 class Transaction(Base):
     __tablename__ = 'transactions'
-    id=Column(Integer, primary_key=True)        # Creating Column for ID
-    type=Column(String(10), nullable=True)      # Creating Column for Transaction Type
-    amount=Column(Float, nullable=True)         # Creating Column for Amount
-    nameOrig=Column(String(15), nullable=True)  # Creating Column for Sender's Account Number
-    oldbalanceOrig=Column(Float, nullable=True) # Creating Column for Old Balance of Sender's Account
-    newbalanceOrig=Column(Float, nullable=True) # Creating Column for New Balance of Sender's Account
-    nameDest=Column(String(15), nullable=True)  # Creating Column for Receiver's Account Number
-    oldbalanceDest=Column(Float, nullable=True) # Creating Column for Old Balance of Receiver's Account
-    newbalanceDest=Column(Float, nullable=True) # Creating Column for New Balance of Receiver's Account
-    date_time=Column(DateTime, nullable=True)   # Creating Column for Date of Transaction
-    prediction=Column(String(15), nullable=True)    # Creating Column for Fraudulent Transaction Prediction
+    Id=Column(Integer, primary_key=True)        # Creating Column for ID
+    Transaction_Type=Column(String(10), nullable=True)      # Creating Column for Transaction Type
+    Transaction_Amount=Column(Float, nullable=True)         # Creating Column for Amount
+    Source_Account=Column(String(15), nullable=True)  # Creating Column for Sender's Account Number
+    SA_Old_Balance=Column(Float, nullable=True) # Creating Column for Old Balance of Sender's Account
+    SA_New_Balance=Column(Float, nullable=True) # Creating Column for New Balance of Sender's Account
+    Destination_Account=Column(String(15), nullable=True)  # Creating Column for Receiver's Account Number
+    DA_Old_Balance=Column(Float, nullable=True) # Creating Column for Old Balance of Receiver's Account
+    DA_New_Balance=Column(Float, nullable=True) # Creating Column for New Balance of Receiver's Account
+    Date=Column(String(15), nullable=True)   # Creating Column for Date of Transaction
+    Time=Column(String(15), nullable=True)   # Creating Column for Time of Transaction
+    Prediction=Column(String(15), nullable=True)    # Creating Column for Fraudulent Transaction Prediction
 
     def __str__(self):
         return self.type

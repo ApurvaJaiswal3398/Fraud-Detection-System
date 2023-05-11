@@ -1,12 +1,5 @@
 {% extends 'layout.html' %}
 
-<!-- 
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
-
 {% block css %}
 <!-- Bootstrap core CSS -->
 <link href="https://getbootstrap.com/docs/4.4/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -143,6 +136,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showPrediciton()">Prediction Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showReport()">View Reports</a>
                     </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="/invoice">
@@ -403,7 +399,7 @@
                                     <label class="phtext" for="floatingSelect">Transaction Type</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="number" class="form-control form-elem" name="trans_amt" id="trans_amt" placeholder="Transaction Amount" required>
+                                    <input type="number" class="form-control form-elem" name="trans_amt" id="trans_amt" placeholder="Transaction Amount" step=".01" required>
                                     <label class="phtext" for="trans_amt">Transaction Amount</label>
                                 </div>
                                 <div class="form-floating mb-2">
@@ -411,11 +407,11 @@
                                     <label class="phtext" for="trans_nameOrig">Source Account</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="number" class="form-control form-elem" name="trans_oldbalanceOrg" id="trans_oldbalanceOrg" placeholder="Old Balance" required>
+                                    <input type="number" class="form-control form-elem" name="trans_oldbalanceOrg" id="trans_oldbalanceOrg" placeholder="Old Balance" step=".01" required>
                                     <label class="phtext" for="trans_oldbalanceOrg">Source Account Old Balance</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="number" class="form-control form-elem" name="trans_newbalanceOrig" id="trans_newbalanceOrig" placeholder="New Balance" required>
+                                    <input type="number" class="form-control form-elem" name="trans_newbalanceOrig" id="trans_newbalanceOrig" placeholder="New Balance" step=".01" required>
                                     <label class="phtext" for="trans_newbalanceOrig">Source Account New Balance</label>
                                 </div>
                                 <div class="form-floating mb-2">
@@ -423,11 +419,11 @@
                                     <label class="phtext" for="trans_nameDest">Destination Account</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control form-elem" name="trans_oldbalanceDest" id="trans_oldbalanceDest" placeholder="Old Balance" required>
+                                    <input type="number" class="form-control form-elem" name="trans_oldbalanceDest" id="trans_oldbalanceDest" placeholder="Old Balance" step=".01" required>
                                     <label class="phtext" for="trans_oldbalanceDest">Destination Account Old Balance</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control form-elem" name="trans_newbalanceDest" id="trans_newbalanceDest" placeholder="New Balance" required>
+                                    <input type="number" class="form-control form-elem" name="trans_newbalanceDest" id="trans_newbalanceDest" placeholder="New Balance" step=".01" required>
                                     <label class="phtext" for="trans_newbalanceDest">Destination Account New Balance</label>
                                 </div>
                                 <button id="predict" type="submit" class="btn btn-primary px-3 rounded-5" style="margin-left: 40%;">Predict</button>
@@ -541,8 +537,12 @@
                                 <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['destnew'] }}</div>
                             </div>
                             <div class="row bg-light">
-                                <div class="col-6 keys">Date and Time</div>
-                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['datetime'] }}</div>
+                                <div class="col-6 keys">Date</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['date'] }}</div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col-6 keys">Time</div>
+                                <div class="col-6 vals border-start border-opacity-25 border-secondary">{{ data['time'] }}</div>
                             </div>
                             <div class="row bg-{% if data['isFraud'] == 0 %}success{% else %}danger{% endif %} h4 p-2 text-white">
                                 <div class="col-6">Prediction Status</div>
@@ -562,10 +562,45 @@
                     <h3 class="text-center">No Details Entered for Prediciton.</h3><br>
                     <h4 class="text-center">Please Enter Transaction Details.</h4><br><br>
                     <div class="text-center">
-                        <a id="login_link" class="btn-main btn-info rounded-5 m-1 p-3" onclick="showForm()">Goto Transaction Entry Form</a>
+                        <a id="login_link" class="btn-main btn-dark text-light rounded-5 m-1 p-3" onclick="showForm()">Goto Transaction Entry Form</a>
                     </div>
                 </div>
                 {% endif %}
+            </div>
+            <div id="report">
+                <div class="container bg-light" style="height: auto; width: auto; overflow-x: scroll;">
+                    <div class="row" style="width: 100%; margin-top: 0;">
+                        <div class="col-md-12">
+                            <form method="post">
+                                <h2 class="my-3">Search</h2>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="search_criteria" name="search_criteria" aria-label="Search Criteria" required>
+                                        <option value="Transaction_Type" selected>Transaction Type</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Prediction">Prediction Result</option>
+                                        <!-- <option value="TRANSFER">TRANSFER</option>  
+                                        <option value="CASH_IN">CASH_IN</option> -->
+                                    </select>
+                                    <label class="phtext" for="floatingSelect">Criteria for Search</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" name="sdate" id="sdate" placeholder="Starting Date">
+                                    <label for="sdate">From Date</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" name="edate" id="edate" placeholder="Ending Date">
+                                    <label for="edate">To Date</label>
+                                </div>
+                                <div class="d-grid gap-2 mb-3">
+                                    <button class="btn btn-success">Update Result</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-12">
+                            {{result|safe}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -586,6 +621,8 @@
 {% endblock %}
 
 {% block js %}
+<!--Below JS link is to use the feather icons in the HTML file -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js" integrity="sha512-24XP4a9KVoIinPFUbcnjIjAjtS59PUoxQj3GNVpWc86bCqPuy3YxAcxJrxFCxXe4GHtAumCbO2Ze2bddtuxaRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!--Below JQuery link is important to diplay the datatables in the HTML file -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 <!--Below JS link is important to diplay the datatables in the HTML file -->
@@ -635,10 +672,12 @@
     // by jquery cdn, to make it interactive)
     $(function () {
         $('.dataframe').DataTable();  //inspect the element of table to  get the classname
-        {% if data['isFraud'] == 0 %}
-        $('#modalId').modal('show');
-        {% elif data['isFraud'] == 1 %}
-        $('#modalId2').modal('show');
+        {% if flag==1 %}
+            {% if data['isFraud'] == 0 %}
+            $('#modalId').modal('show');
+            {% elif data['isFraud'] == 1 %}
+            $('#modalId2').modal('show');
+            {% endif %}
         {% endif %}
     });
 </script>
