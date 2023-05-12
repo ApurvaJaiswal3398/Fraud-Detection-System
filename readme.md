@@ -15,6 +15,10 @@
 - Model integration
 
 ---
+*Project Screenshots*
+![Link to Folder](https://github.com/ApurvaJaiswal3398/Fraud-Detection-System/Project SS/)
+
+---
 
 *Contributors*
 1. [Apurva Jaiswal](https://github.com/ApurvaJaiswal3398/)
