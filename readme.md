@@ -16,7 +16,7 @@
 
 ---
 *Project Screenshots*
-![Link to Folder](https://github.com/ApurvaJaiswal3398/Fraud-Detection-System/Project SS/)
+- ![Link to Folder](https://github.com/ApurvaJaiswal3398/Fraud-Detection-System/tree/master/Project%20SS)
 
 ---
 
