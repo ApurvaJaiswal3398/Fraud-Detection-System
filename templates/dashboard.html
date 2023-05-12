@@ -135,7 +135,7 @@
                         <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showForm()">Transaction Entry</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showPrediciton()">Prediction Status</a>
+                        <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showPrediciton()">Recent Prediction Status</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn-outline-dark bg-light" id="chart" onclick="showReport()">View Reports</a>
@@ -568,11 +568,11 @@
                 {% endif %}
             </div>
             <div id="report" style="display: {% if osr %}block{% else %}none{% endif %};">
-                <div class="container bg-light" style="height: auto; width: auto; overflow-x: scroll;">
-                    <div class="row" style="width: 100%; margin-top: 0;">
+                <div class="row">
+                    <div class="col-12">
                         <div class="col-md-12">
-                            <form class="row" method="post">
-                                <h2 class="my-3">Search</h2>
+                            <form class="row bg-dark" method="post">
+                                <h2 class="my-3 text-light">Reports</h2>
                                 <div class="form-floating mb-3 col-3" id="srchcrt">
                                     <select class="form-select" id="searchSelect" name="searchSelect" onchange="showSearchOptions()" aria-label="SearchCriteria">
                                         <option value="None" selected disabled hidden>Select an Option</option>
@@ -606,7 +606,7 @@
                                 <div class="form-floating mb-3 col-3" id="prdsrch" style="display: none;">
                                     <select class="form-select" id="predSelect" name="predSelect" aria-label="TypeCriteria" onchange="showPredOptions()">
                                         <option value="None" selected disabled hidden>Select an Option</option>
-                                        <option value="Not Fraud">Safe</option>
+                                        <option value="Not Fraud">Not Fraud</option>
                                         <option value="Fraud">Fraud</option>
                                     </select>
                                     <label class="phtext px-4" for="predSelect">Prediction Criteria</label>
@@ -637,22 +637,26 @@
                                     <label for="edate" class="px-4">To Date</label>
                                 </div>
                                 <div class="d-grid gap-2 mb-3 col-2">
-                                    <button class="btn btn-success">Update Result</button>
+                                    <button class="btn btn-success">Show Result</button>
                                 </div>
                             </form>
                         </div>
                         <div id="testsel"></div>
+                    </div>
+                </div>
+                <div class="container bg-light" style="height: auto; width: auto; overflow-x: scroll;">
+                    <div class="row" style="width: 100%; margin-top: 0;">
+                        
                         <div class="col-md-12">
                             {{result|safe}}
                         </div>
-                        <!-- { % if fig % } -->
-                        <div class="col">
-                            <!-- { { fig|safe } } -->
-                            <img src="../static/images/output.png">
-                        </div>
-                        <!-- { % endif % } -->
                     </div>
                 </div>
+                {% if fig %}
+                <div class="col-8 p-3 mx-auto">
+                    {{ fig|safe }}
+                </div>
+                {% endif %}
             </div>
         </main>
     </div>
@@ -743,8 +747,7 @@
     // by jquery cdn, to make it interactive)
     $(function () {
         $('.dataframe').DataTable();  //inspect the element of table to  get the classname
-        $('#DataTables_Table_0_filter').style.display = "none";
-        {% if flag==1 %}
+        {% if flag == 1 %}
             {% if data['isFraud'] == 0 %}
             $('#modalId').modal('show');
             {% elif data['isFraud'] == 1 %}

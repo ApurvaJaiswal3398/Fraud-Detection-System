@@ -313,43 +313,84 @@ def dashboard():
         
 
         if searchSelect != None and searchSelect != '':
+            print("Search Details Entered!")
             opensearch = True
             if searchSelect == 'Transaction_Type':
+                print('Transaction Type Selected!')
                 if typeSelect != None and typeSelect != '':
+                    print('Transaction Type : ' + typeSelect)
                     result = df.query("Transaction_Type == @typeSelect")
+                    print('Result is :')
+                    print(result)
+                    prediction_counts = result['Prediction'].value_counts().reset_index()
+                    print('Prediction Counts :')
+                    print(prediction_counts)
+                    fig2 = px.bar(prediction_counts, x='Prediction', y='count')
+                    fig2.update_layout(xaxis_title='Prediction', yaxis_title='Number of Transactions',title=f'Number of Transactions per Prediction for {typeSelect} Transactions')
+                    fig = fig2.to_html()
+                    print('Figure present : ' + str(fig != None))
                 else:
+                    print('No Transaction Type Selected!')
                     result = df
-                    # # Filter DataFrame based on specified transaction types
-                    # specified_transaction_types = ['PAYMENT', 'CASH_IN', 'CASH_OUT', 'DEBIT', 'TRANSFER']
-                    # filtered_df = df[df['Transaction_Type'].isin(specified_transaction_types)]
-
-                    # # Calculate the transaction type counts
-                    # transaction_type_counts = filtered_df['Transaction_Type'].value_counts()
-
-                    # # Plotting the pie chart
-                    # plt.pie(transaction_type_counts, labels=transaction_type_counts.index, autopct='%1.1f%%', startangle=90)
-                    # plt.title('Transaction Type Distribution')
-                    # plt.axis('equal')
-
-                    # # Display the chart
-                    # plt.show()
+                    fig = px.sunburst(df, path=['Transaction_Type', 'Prediction'], values='Transaction_Amount').to_html()
             elif searchSelect == 'Prediction':
+                print('Prediction Selected!')
                 if predSelect != None and predSelect != '':
+                    print('Prediction : ' + predSelect)
                     result = df.query("Prediction == @predSelect")
+                    transaction_type_counts = result.value_counts().reset_index()
+                    fig2 = px.pie(transaction_type_counts, values='count', names='Transaction_Type')
+                    fig2.update_layout(title=f'TransactionType Distribution for {predSelect} Predictions')
+                    fig = fig2.to_html()
                 else:
+                    print('No Prediction Selected!')
                     result = df
+                    # Calculate the counts for Fraud and Not Fraud predictions per Transaction_Type
+                    grouped_df = df.groupby(['Transaction_Type', 'Prediction']).size().reset_index(name='Count')
+                    # Filter the DataFrame for Fraud and Not Fraud predictions
+                    fraud_df = grouped_df[grouped_df['Prediction'] == 'Fraud']
+                    not_fraud_df = grouped_df[grouped_df['Prediction'] == 'Not Fraud']
+                    # Create the double bar plot using Plotly
+                    fig2 = go.Figure(data=[
+                        go.Bar(name='Fraud', x=fraud_df['Transaction_Type'], y=fraud_df['Count']),
+                        go.Bar(name='Not Fraud', x=not_fraud_df['Transaction_Type'], y=not_fraud_df['Count'])
+                    ])
+                    # Update the layout of the plot
+                    fig2.update_layout(barmode='group', xaxis_title='Transaction_Type', yaxis_title='Count',
+                                    title='Number of Predicted Transactions per Transaction Type')
+                    fig = fig2.to_html()
             elif searchSelect == 'Date':
+                print('Date Selected!')
                 if sdate != None and sdate != '' and edate != None and edate != '':
+                    print(f"Start Date : {sdate}\nEnd Date : {edate}")
                     sdate = datetime.strptime(sdate, "%Y-%m-%d").date().strftime("%d-%m-%Y")
                     edate = datetime.strptime(edate, "%Y-%m-%d").date().strftime("%d-%m-%Y")
                     print(f"New Start Date : {sdate}\nNew End Date : {edate}")
                     result = df.query("@sdate <= Date <= @edate")
+                    # Calculate the prediction counts
+                    prediction_counts = result['Prediction'].value_counts().reset_index()
+                    # Create the bar plot using Plotly Express
+                    fig2 = px.bar(prediction_counts, x='Prediction', y='count')
+                    # Update the chart title and axis labels
+                    fig2.update_layout(title=f'Prediction Distribution between {sdate} and {edate}',
+                                    xaxis_title='Prediction', yaxis_title='Count')
+                    fig = fig2.to_html()
                 else:
+                    print('No Date Selected!')
                     result = df
+                    prediction_counts = result['Prediction'].value_counts().reset_index()
+                    # Create the pie chart using Plotly Express
+                    fig2 = px.pie(prediction_counts, values='count', names='Prediction')
+                    # Update the chart title
+                    fig2.update_layout(title=f'All Time Prediction Distribution')
+                    fig = fig2.to_html()
             else:
+                print('No Search Option Selected!')
                 result = df
         elif trans_type!=None and trans_type!='':
             # Creting dictionary for extracted data
+            print("Transaction Details Entered!")
+            
             data = {'type': trans_type,
                     'amount': trans_amt,
                     'srcacc': trans_nameOrig,
@@ -390,6 +431,7 @@ def dashboard():
                     data['isFraud'] = 0
                     isFraud = 'Not Fraud'
                 flag = 1
+                print('flag changed to : ', flag)
                 db = getdb()    # Getting the database
                 db.add(Transaction(Transaction_Type=trans_type, 
                                 Transaction_Amount=trans_amt, 
