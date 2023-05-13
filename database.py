@@ -4,10 +4,10 @@ from sqlalchemy import Column, String, Float, Integer, Boolean, DateTime
 from datetime import datetime
 from sqlalchemy import create_engine
 
-Base=declarative_base()
+Base=declarative_base()    # Creating Base Class
 
-class Transaction(Base):
-    __tablename__ = 'transactions'
+class Transaction(Base):    # Creating Table for Transactions, inheriting Base Class
+    __tablename__ = 'transactions'  # Creating Table Name
     Id=Column(Integer, primary_key=True)        # Creating Column for ID
     Transaction_Type=Column(String(10), nullable=True)      # Creating Column for Transaction Type
     Transaction_Amount=Column(Float, nullable=True)         # Creating Column for Amount
@@ -21,8 +21,8 @@ class Transaction(Base):
     Time=Column(String(15), nullable=True)   # Creating Column for Time of Transaction
     Prediction=Column(String(15), nullable=True)    # Creating Column for Fraudulent Transaction Prediction
 
-    def __str__(self):
+    def __str__(self):  # Creating String Representation of the Class
         return self.type
 
-engine=create_engine('sqlite:///project.sqlite')
-Base.metadata.create_all(engine)
+engine=create_engine('sqlite:///project.sqlite')    # Creating Engine for Database
+Base.metadata.create_all(engine)    # Creating Database

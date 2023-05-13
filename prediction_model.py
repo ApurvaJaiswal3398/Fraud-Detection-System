@@ -20,9 +20,9 @@ from sklearn.metrics import confusion_matrix, classification_report # confusion 
 from sklearn.pipeline import Pipeline                       # pipeline
 from imblearn.over_sampling import SMOTE                    # SMOTE
 
-X = df.drop(columns=['isFraud', 'isFlaggedFraud'])        # features
-y = df['isFraud']                                       # target
-smote = SMOTE()                                        # SMOTE
+X = df.drop(columns=['isFraud', 'isFlaggedFraud'])  # features
+y = df['isFraud']   # target
+smote = SMOTE()     # SMOTE
 
 preprocessor = ColumnTransformer(
     transformers=[
